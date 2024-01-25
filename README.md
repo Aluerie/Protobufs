@@ -11,7 +11,7 @@ This repository contains extra content.
 
 ## 🆘 TODO
 
-* [ ] Script to fix namings
+* [ ] Script to fix `.py` files
     * [ ] `CMsg` and similar `k_msg_something` pointless prefixes
     * [ ] `GC` pointless prefixes to enums (but keep GCToClient or similar ones)
     * [ ] Remove `DOTA` prefixes
