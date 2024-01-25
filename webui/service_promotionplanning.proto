@@ -19,6 +19,7 @@ message CPromotionPlan {
 	optional uint32 rtime32_end_time = 6;
 	optional uint32 partner_id = 7;
 	optional string input_access_key = 8;
+	optional uint32 last_update_time = 9;
 }
 
 message CPromotionPlanning_CreatePlan_Request {
@@ -46,10 +47,17 @@ message CPromotionPlanning_GetAllActivePlan_Response {
 
 message CPromotionPlanning_GetAllPlansForApps_Request {
 	repeated uint32 appids = 1;
+	optional bool exclude_sales = 2;
 }
 
 message CPromotionPlanning_GetAllPlansForApps_Response {
 	repeated .CPromotionPlan plans = 1;
+	repeated .CPromotionPlanning_GetAllPlansForApps_Response_CAppIncludedInSales apps_included_in_sales = 2;
+}
+
+message CPromotionPlanning_GetAllPlansForApps_Response_CAppIncludedInSales {
+	repeated uint32 appids = 1;
+	optional fixed64 clan_event_gid = 2;
 }
 
 message CPromotionPlanning_GetPlan_Request {
@@ -66,6 +74,15 @@ message CPromotionPlanning_GetPlanByInputAccessKey_Request {
 
 message CPromotionPlanning_GetPlanByInputAccessKey_Response {
 	optional .CPromotionPlan plan = 1;
+}
+
+message CPromotionPlanning_GetPlansUpdatedSince_Request {
+	optional uint32 rtime = 1;
+}
+
+message CPromotionPlanning_GetPlansUpdatedSince_Response {
+	repeated .CPromotionPlan plans = 1;
+	repeated fixed64 deleted_plan_ids = 2;
 }
 
 message CPromotionPlanning_GetSentNotification_Request {
@@ -127,6 +144,7 @@ service PromotionPlanning {
 	rpc GetAllPlansForApps (.CPromotionPlanning_GetAllPlansForApps_Request) returns (.CPromotionPlanning_GetAllPlansForApps_Response);
 	rpc GetPlan (.CPromotionPlanning_GetPlan_Request) returns (.CPromotionPlanning_GetPlan_Response);
 	rpc GetPlanByInputAccessKey (.CPromotionPlanning_GetPlanByInputAccessKey_Request) returns (.CPromotionPlanning_GetPlanByInputAccessKey_Response);
+	rpc GetPlansUpdatedSince (.CPromotionPlanning_GetPlansUpdatedSince_Request) returns (.CPromotionPlanning_GetPlansUpdatedSince_Response);
 	rpc GetSentNotification (.CPromotionPlanning_GetSentNotification_Request) returns (.CPromotionPlanning_GetSentNotification_Response);
 	rpc ResendNotification (.CPromotionPlanning_ResendNotification_Request) returns (.CPromotionPlanning_ResendNotification_Response);
 	rpc SearchPlan (.CPromotionPlanning_SearchPlan_Request) returns (.CPromotionPlanning_SearchPlan_Response);
