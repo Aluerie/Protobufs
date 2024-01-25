@@ -1,17 +1,40 @@
-# Fork information
+# 🍴 Fork Information
 
-This fork is used to compile `.proto` files into mirrored Python `.py` files with `betterproto` compiler. Those files are later edited to be used in <https://github.com/Gobot1234/steam.py> (or partially)
+This fork is used to compile `.proto` files into mirrored Python `.py` files with `betterproto` compiler. Those files or its part are later edited to be used in [Gobot1234/steam.py](<https://github.com/Gobot1234/steam.py>)
 
 This repository contains extra content.
 
-* `proto.exe` - from <https://github.com/protocolbuffers/protobuf/releases/>.
+* `proto.exe` - from [protobuf/releases](<https://github.com/protocolbuffers/protobuf/releases/>).
 * `compile.ps1` file in it for easy compiling files in batches.
-* compiled .py proto-mirrors for
-    * `./dota2/py_mirrors` - Dota 2
+* compiled `.py` proto-mirrors for
+    * Dota 2: `./dota2/py_mirrors`
 
-Unfortunately, `betterproto` doesn't type-hint stuff properly so those should be manually (or chat gpt^tm) corrected.
+## 🆘 TODO
 
-## Notes to remember
+* [ ] Script to fix namings
+    * [ ] `CMsg` and similar `k_msg_something` pointless prefixes
+    * [ ] `GC` pointless prefixes to enums (but keep GCToClient or similar ones)
+    * [ ] Remove `DOTA` prefixes
+    * [ ] When they repeat class name in enums vars - remove it from enum var names
+    * [ ] PascalCase for enum variables and class names
+    * [ ] ^Meaning remove `_` from them too
+    * [ ] `@dataclass` into `@dataclass(eq=False, repr=False)`
+    * [ ] Change `List` to `list`
+    * [ ] Remove " in their `List["Something"]`
+    * [ ] add `from __future__ import annotations`
+    * [ ] Add one line-break before that^ and after `#` disclaimer comments
+    * [ ] resolve `TYPE_CHECKING` relative imports from other files
+    * [ ] Change `Optional` to `| None`
+    * [ ] Reformat with black/isort/ruff in case some strings went below line limit or something
+* [ ] Edit `compile.ps1`
+    * [ ] include check if `betterproto[compiler]` is installed
+    * [ ] Paste google `descriptor.proto` dependency to compiling folder if it isn't present.
+    * [ ] Pull/Merge from Parent Repo
+    * [ ] Loop over all root folders like `csgo`, `steam`, `tf2`
+    * [ ] Clean up empty directories it sometimes makes
+* [ ] Rethink folder structure - is there anything better than trashing everything into extra folder.
+
+## 💡 Notes to remember
 
 * Before using `compile.ps1` remember to setup to venv with `pip install "betterproto[compiler]"` installed.
 * Remember to paste google `descriptor.proto` dependency if it isn't present.
