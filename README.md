@@ -1,8 +1,8 @@
 # 🍴 Fork Information
 
-This fork is used to compile `.proto` files into mirrored Python `.py` files with `betterproto` compiler. Those files or its part are later edited to be used in [Gobot1234/steam.py](<https://github.com/Gobot1234/steam.py>)
+This fork is used to compile `.proto` files into mirrored Python `.py` files with `betterproto` compiler. Those files or their part are later edited to be used in [Gobot1234/steam.py](<https://github.com/Gobot1234/steam.py>).
 
-This repository contains extra content.
+The repository contains extra content:
 
 * `proto.exe` - from [protobuf/releases](<https://github.com/protocolbuffers/protobuf/releases/>).
 * `compile.ps1` file in it for easy compiling files in batches.
