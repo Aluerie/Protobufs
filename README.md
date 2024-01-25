@@ -11,7 +11,7 @@ The repository contains extra content:
 
 ## 🆘 TODO
 
-* [ ] Script to fix `.py` files
+* [ ] Script to fix `.py` files (this is probably more suitable for some cursed post-commit git-action ci)
     * [ ] `CMsg` and similar `k_msg_something` pointless prefixes
     * [ ] `GC` pointless prefixes to enums (but keep GCToClient or similar ones)
     * [ ] Remove `DOTA` prefixes
