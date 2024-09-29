@@ -514,7 +514,6 @@ enum EMsg {
 	k_EMsgGCCmdSwitch = 2209;
 	k_EMsgAMRefreshSessions = 2210;
 	k_EMsgGCAchievementAwarded = 2212;
-	k_EMsgGCSystemMessage = 2213;
 	k_EMsgGCCmdStatus = 2216;
 	k_EMsgGCRegisterWebInterfaces_Deprecated = 2217;
 	k_EMsgGCGetAccountDetails_DEPRECATED = 2218;
@@ -589,7 +588,6 @@ enum EMsg {
 	k_EMsgBaseAMRange2 = 4000;
 	k_EMsgAMCreateChat = 4001;
 	k_EMsgAMCreateChatResponse = 4002;
-	k_EMsgAMSetProfileURL = 4005;
 	k_EMsgAMGetAccountEmailAddress = 4006;
 	k_EMsgAMGetAccountEmailAddressResponse = 4007;
 	k_EMsgAMRequestClanData = 4008;
@@ -767,7 +765,6 @@ enum EMsg {
 	k_EMsgAMNameChange = 4300;
 	k_EMsgAMGetNameHistory = 4301;
 	k_EMsgAMGetNameHistoryResponse = 4302;
-	k_EMsgAMUpdateProviderStatus = 4305;
 	k_EMsgAMSupportRemoveAccountSecurity = 4307;
 	k_EMsgAMIsAccountInCaptchaGracePeriod = 4308;
 	k_EMsgAMIsAccountInCaptchaGracePeriodResponse = 4309;
@@ -884,23 +881,9 @@ enum EMsg {
 	k_EMsgPSGetAccountCartContents = 5013;
 	k_EMsgPSGetAccountCartContentsResponse = 5014;
 	k_EMsgBaseUFSRange = 5200;
-	k_EMsgClientUFSUploadFileRequest = 5202;
-	k_EMsgClientUFSUploadFileResponse = 5203;
-	k_EMsgClientUFSUploadFileChunk = 5204;
-	k_EMsgClientUFSUploadFileFinished = 5205;
-	k_EMsgClientUFSGetFileListForApp = 5206;
-	k_EMsgClientUFSGetFileListForAppResponse = 5207;
-	k_EMsgClientUFSDownloadRequest = 5210;
-	k_EMsgClientUFSDownloadResponse = 5211;
-	k_EMsgClientUFSDownloadChunk = 5212;
-	k_EMsgClientUFSLoginRequest = 5213;
-	k_EMsgClientUFSLoginResponse = 5214;
 	k_EMsgUFSReloadPartitionInfo = 5215;
-	k_EMsgClientUFSTransferHeartbeat = 5216;
 	k_EMsgUFSSynchronizeFile = 5217;
 	k_EMsgUFSSynchronizeFileResponse = 5218;
-	k_EMsgClientUFSDeleteFileRequest = 5219;
-	k_EMsgClientUFSDeleteFileResponse = 5220;
 	k_EMsgClientUFSGetUGCDetails = 5226;
 	k_EMsgClientUFSGetUGCDetailsResponse = 5227;
 	k_EMsgUFSUpdateFileFlags = 5228;
@@ -926,8 +909,6 @@ enum EMsg {
 	k_EMsgUFSDownloadFinishRequest = 5248;
 	k_EMsgUFSDownloadFinishResponse = 5249;
 	k_EMsgUFSFlushURLCache = 5250;
-	k_EMsgClientUFSUploadCommit = 5251;
-	k_EMsgClientUFSUploadCommitResponse = 5252;
 	k_EMsgUFSMigrateFileAppID = 5253;
 	k_EMsgUFSMigrateFileAppIDResponse = 5254;
 	k_EMsgBaseClient2 = 5400;
@@ -978,7 +959,7 @@ enum EMsg {
 	k_EMsgClientResetForgottenPassword3 = 5460;
 	k_EMsgClientRequestForgottenPasswordEmail3 = 5461;
 	k_EMsgClientNewLoginKey = 5463;
-	k_EMsgClientNewLoginKeyAccepted = 5464;
+	k_EMsgClientNewLoginKeyAccepted_Deprecated = 5464;
 	k_EMsgClientLogOnWithHash_Deprecated = 5465;
 	k_EMsgClientStoreUserStats2 = 5466;
 	k_EMsgClientStatsUpdated = 5467;
@@ -1040,6 +1021,8 @@ enum EMsg {
 	k_EMsgClientRequestMachineAuth = 5541;
 	k_EMsgClientRequestMachineAuthResponse = 5542;
 	k_EMsgClientScreenshotsChanged = 5543;
+	k_EMsgClientLaunchClientApp = 5544;
+	k_EMsgClientLaunchClientAppResponse = 5545;
 	k_EMsgClientGetCDNAuthToken = 5546;
 	k_EMsgClientGetCDNAuthTokenResponse = 5547;
 	k_EMsgClientDownloadRateStatistics = 5548;
@@ -1076,8 +1059,8 @@ enum EMsg {
 	k_EMsgClientCommentNotifications = 5582;
 	k_EMsgClientRequestCommentNotifications = 5583;
 	k_EMsgClientPersonaChangeResponse = 5584;
-	k_EMsgClientRequestWebAPIAuthenticateUserNonce = 5585;
-	k_EMsgClientRequestWebAPIAuthenticateUserNonceResponse = 5586;
+	k_EMsgClientRequestWebAPIAuthenticateUserNonce_Deprecated = 5585;
+	k_EMsgClientRequestWebAPIAuthenticateUserNonceResponse_Deprecated = 5586;
 	k_EMsgClientPlayerNicknameList = 5587;
 	k_EMsgAMClientSetPlayerNickname = 5588;
 	k_EMsgAMClientSetPlayerNicknameResponse = 5589;
@@ -1125,9 +1108,6 @@ enum EMsg {
 	k_EMsgMDSGetDepotManifest = 5829;
 	k_EMsgMDSGetDepotManifestResponse = 5830;
 	k_EMsgMDSGetDepotManifestChunk = 5831;
-	k_EMsgMDSGetDepotChunk = 5832;
-	k_EMsgMDSGetDepotChunkResponse = 5833;
-	k_EMsgMDSGetDepotChunkChunk = 5834;
 	k_EMsgMDSToCSFlushChunk = 5844;
 	k_EMsgMDSMigrateChunk = 5847;
 	k_EMsgMDSMigrateChunkResponse = 5848;
@@ -1352,6 +1332,8 @@ enum EMsg {
 	k_EMsgClientPICSProductInfoResponse = 8904;
 	k_EMsgClientPICSAccessTokenRequest = 8905;
 	k_EMsgClientPICSAccessTokenResponse = 8906;
+	k_EMsgClientPICSPrivateBetaRequest = 8907;
+	k_EMsgClientPICSPrivateBetaResponse = 8908;
 	k_EMsgWorkerProcess = 9000;
 	k_EMsgWorkerProcessPingRequest = 9000;
 	k_EMsgWorkerProcessPingResponse = 9001;
@@ -1422,6 +1404,12 @@ enum EMsg {
 	k_EMsgClientUnlockHEVCResponse_OBSOLETE = 9514;
 	k_EMsgRemoteClientStatusRequest = 9515;
 	k_EMsgRemoteClientStatusResponse = 9516;
+	k_EMsgRemoteClientAuthorizationRequest = 9517;
+	k_EMsgRemoteClientAuthorizationResponse = 9518;
+	k_EMsgRemoteClientAuthorizationCancelRequest = 9519;
+	k_EMsgRemoteClientAuthorizationConfirmed = 9520;
+	k_EMsgRemoteClientProofRequest = 9521;
+	k_EMsgRemoteClientProofResponse = 9522;
 	k_EMsgClientConcurrentSessionsBase = 9600;
 	k_EMsgClientPlayingSessionState = 9600;
 	k_EMsgClientKickPlayingSession = 9601;
@@ -1522,4 +1510,5 @@ enum ECodecUsageReason {
 	k_ECodecUsageReasonRemotePlay = 1;
 	k_ECodecUsageReasonBroadcasting = 2;
 	k_ECodecUsageReasonGameVideo = 3;
+	k_ECodecUsageReasonGameRecording = 4;
 }

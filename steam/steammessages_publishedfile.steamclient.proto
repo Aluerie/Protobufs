@@ -11,6 +11,7 @@ enum EPublishedFileRevision {
 	k_EPublishedFileRevision_ApprovedSnapshot_China = 3;
 	k_EPublishedFileRevision_RejectedSnapshot = 4;
 	k_EPublishedFileRevision_RejectedSnapshot_China = 5;
+	k_EPublishedFileRevision_AuthorSnapshot = 6;
 }
 
 enum EPublishedFileForSaleStatus {
@@ -117,6 +118,14 @@ message CPublishedFile_GetDetails_Request {
 	optional bool strip_description_bbcode = 15;
 	optional .EPublishedFileRevision desired_revision = 16 [default = k_EPublishedFileRevision_Default];
 	optional bool includereactions = 17 [default = false];
+	optional bool admin_query = 18;
+}
+
+message PublishedFileAuthorSnapshot {
+	optional uint32 timestamp = 1;
+	optional string game_branch_min = 2;
+	optional string game_branch_max = 3;
+	optional fixed64 manifestid = 4;
 }
 
 message PublishedFileDetails {
@@ -245,6 +254,7 @@ message PublishedFileDetails {
 	optional .EBanContentCheckResult ban_text_check_result = 71 [default = k_EBanContentCheckResult_NotScanned];
 	optional float search_score = 73;
 	optional uint64 external_asset_id = 74;
+	repeated .PublishedFileAuthorSnapshot author_snapshots = 75;
 }
 
 message CPublishedFile_GetDetails_Response {
@@ -269,6 +279,8 @@ message CPublishedFile_GetItemInfo_Response {
 		optional uint32 time_updated = 2;
 		optional fixed64 manifest_id = 3;
 		optional uint32 flags = 4;
+		optional .EPublishedFileRevision revision = 5 [default = k_EPublishedFileRevision_Default];
+		repeated .PublishedFileAuthorSnapshot author_snapshots = 6;
 	}
 
 	optional uint32 update_time = 1;
@@ -304,6 +316,7 @@ message CPublishedFile_GetUserFiles_Request {
 	optional int32 language = 29 [default = 0];
 	repeated .CPublishedFile_GetUserFiles_Request.TagGroup taggroups = 34;
 	repeated .EContentDescriptorID excluded_content_descriptors = 37;
+	optional bool admin_query = 38;
 	optional bool totalonly = 17;
 	optional bool ids_only = 18;
 	optional bool return_vote_data = 19 [default = true];
@@ -388,6 +401,10 @@ message CPublishedFile_GetChangeHistoryEntry_Request {
 message CPublishedFile_GetChangeHistoryEntry_Response {
 	optional string change_description = 1;
 	optional int32 language = 2;
+	optional bool saved_snapshot = 3;
+	optional string snapshot_game_branch_min = 4;
+	optional string snapshot_game_branch_max = 5;
+	optional fixed64 manifest_id = 6;
 }
 
 message CPublishedFile_GetChangeHistory_Request {
@@ -403,6 +420,10 @@ message CPublishedFile_GetChangeHistory_Response {
 		optional uint32 timestamp = 1;
 		optional string change_description = 2;
 		optional int32 language = 3;
+		optional bool saved_snapshot = 4;
+		optional string snapshot_game_branch_min = 5;
+		optional string snapshot_game_branch_max = 6;
+		optional fixed64 manifest_id = 7;
 	}
 
 	repeated .CPublishedFile_GetChangeHistory_Response.ChangeLog changes = 1;
@@ -460,6 +481,7 @@ message CPublishedFile_QueryFiles_Request {
 	optional .CPublishedFile_QueryFiles_Request.DateRange date_range_created = 44;
 	optional .CPublishedFile_QueryFiles_Request.DateRange date_range_updated = 45;
 	repeated .EContentDescriptorID excluded_content_descriptors = 46;
+	optional bool admin_query = 47;
 	optional bool totalonly = 16;
 	optional bool ids_only = 35;
 	optional bool return_vote_data = 17;
@@ -624,6 +646,7 @@ message CPublishedFile_GetItemChanges_Request {
 	optional uint32 appid = 1;
 	optional uint32 last_time_updated = 2;
 	optional uint32 num_items_max = 3;
+	optional .EPublishedFileRevision desired_revision = 4 [default = k_EPublishedFileRevision_Default];
 }
 
 message CPublishedFile_GetItemChanges_Response {
@@ -631,6 +654,7 @@ message CPublishedFile_GetItemChanges_Response {
 		optional fixed64 published_file_id = 1;
 		optional uint32 time_updated = 2;
 		optional fixed64 manifest_id = 3;
+		repeated .PublishedFileAuthorSnapshot author_snapshots = 4;
 	}
 
 	optional uint32 update_time = 1;
@@ -667,6 +691,8 @@ message CPublishedFile_FileSubscribed_Notification {
 		optional .EPublishedFileRevision revision = 1 [default = k_EPublishedFileRevision_Default];
 		optional fixed64 file_hcontent = 2;
 		optional uint32 rtime_updated = 3;
+		optional string game_branch_min = 4;
+		optional string game_branch_max = 5;
 	}
 
 	optional fixed64 published_file_id = 1;
@@ -676,6 +702,7 @@ message CPublishedFile_FileSubscribed_Notification {
 	optional uint32 rtime_subscribed = 5;
 	optional bool is_depot_content = 6;
 	optional uint32 rtime_updated = 7;
+	optional .EPublishedFileRevision revision = 9 [default = k_EPublishedFileRevision_Default];
 	repeated .CPublishedFile_FileSubscribed_Notification.RevisionData revisions = 8;
 }
 

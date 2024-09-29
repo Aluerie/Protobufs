@@ -20,6 +20,10 @@ message CPromotionEventInvitation {
 	optional string promotion_id = 17;
 	optional bool cancelled = 18;
 	optional uint32 rtime32_cancel_time = 19;
+	optional bool require_sale_page = 20;
+	optional int32 require_sale_page_type = 21 [(.description) = "enum"];
+	optional string admin_notes = 22;
+	optional string partner_notes = 23;
 }
 
 message CPromotionEventInviteReceive {
@@ -37,6 +41,7 @@ message CPromotionEventInvites_AcceptInvite_Request {
 }
 
 message CPromotionEventInvites_AcceptInvite_Response {
+	optional fixed64 gid = 1;
 }
 
 message CPromotionEventInvites_CancelInvite_Request {

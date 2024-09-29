@@ -25,6 +25,9 @@ message CCheckout_ValidateCart_Request {
 	optional int64 gidshoppingcart = 1;
 	optional .StoreBrowseContext context = 2;
 	optional .StoreBrowseItemDataRequest data_request = 3;
+	optional .CartGiftInfo gift_info = 4;
+	optional fixed64 gidreplayoftransid = 5;
+	optional bool for_init_purchase = 6;
 }
 
 message CCheckout_ValidateCart_Response {
@@ -44,6 +47,8 @@ message CCheckout_ValidateCart_Response_CartItem {
 	optional .CartAmount original_price = 9;
 	optional .CartCoupon coupon_applied = 10;
 	optional .CartAmount coupon_discount = 11;
+	optional bool can_purchase_as_gift = 12;
+	optional bool restrict_add_additional_to_cart = 13;
 }
 
 message CCheckout_ValidateCart_Response_CartItem_Errors {
@@ -53,6 +58,11 @@ message CCheckout_ValidateCart_Response_CartItem_Errors {
 	optional bool invalid_coupon = 4;
 	optional bool invalid_coupon_for_item = 5;
 	optional bool coupon_exclusive_promo = 6;
+	optional bool cannot_purchase_as_gift = 7;
+	optional bool invalid_item = 8;
+	optional bool too_many_in_cart = 9;
+	optional bool has_existing_billing_agreement = 10;
+	repeated int32 missing_must_own_appids = 11;
 }
 
 message CCheckout_ValidateCart_Response_CartItem_Warnings {

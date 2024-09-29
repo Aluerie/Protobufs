@@ -18,6 +18,7 @@ enum EMarketingMessageType {
 	k_EMarketingMessageUpdate = 10;
 	k_EMarketingMessageMidweekDeal = 11;
 	k_EMarketingMessageDailyDeal = 12;
+	k_EMarketingMessageNewDLC = 13;
 }
 
 enum EMarketingMessageVisibility {
@@ -243,6 +244,22 @@ message CMarketingMessages_GetPartnerMessagePreview_Response {
 	optional .CMarketingMessageProto message = 1;
 }
 
+message CMarketingMessage_GetMarketingMessagesForPartner_Request {
+	optional uint32 partnerid = 1;
+}
+
+message CMarketingMessage_GetMarketingMessagesForPartner_Response {
+	repeated .CMarketingMessageProto messages = 1;
+}
+
+message CMarketingMessage_GetMarketingMessagesForApps_Request {
+	repeated uint32 appids = 1;
+}
+
+message CMarketingMessage_GetMarketingMessagesForApps_Response {
+	repeated .CMarketingMessageProto messages = 1;
+}
+
 service MarketingMessages {
 	rpc GetActiveMarketingMessages (.CMarketingMessages_GetActiveMarketingMessages_Request) returns (.CMarketingMessages_GetActiveMarketingMessages_Response);
 	rpc GetMarketingMessagesForUser (.CMarketingMessages_GetMarketingMessagesForUser_Request) returns (.CMarketingMessages_GetMarketingMessagesForUser_Response);
@@ -261,4 +278,6 @@ service MarketingMessages {
 	rpc GetPartnerReadyToPublishMessages (.CMarketingMessages_GetPartnerReadyToPublishMessages_Request) returns (.CMarketingMessages_GetPartnerReadyToPublishMessages_Response);
 	rpc PublishPartnerMessage (.CMarketingMessages_PartnerPublishMessage_Request) returns (.CMarketingMessages_PartnerPublishMessage_Response);
 	rpc GetPartnerMessagePreview (.CMarketingMessages_GetPartnerMessagePreview_Request) returns (.CMarketingMessages_GetPartnerMessagePreview_Response);
+	rpc GetMarketingMessagesForPartner (.CMarketingMessage_GetMarketingMessagesForPartner_Request) returns (.CMarketingMessage_GetMarketingMessagesForPartner_Response);
+	rpc GetMarketingMessagesForApps (.CMarketingMessage_GetMarketingMessagesForApps_Request) returns (.CMarketingMessage_GetMarketingMessagesForApps_Response);
 }

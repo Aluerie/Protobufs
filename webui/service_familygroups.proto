@@ -8,6 +8,14 @@ message CFamilyGroups_CancelFamilyGroupInvite_Request {
 message CFamilyGroups_CancelFamilyGroupInvite_Response {
 }
 
+message CFamilyGroups_ClearCooldownSkip_Request {
+	optional fixed64 steamid = 1;
+	optional uint64 invite_id = 2;
+}
+
+message CFamilyGroups_ClearCooldownSkip_Response {
+}
+
 message CFamilyGroups_ConfirmInviteToFamilyGroup_Request {
 	optional uint64 family_groupid = 1;
 	optional uint64 invite_id = 2;
@@ -33,6 +41,7 @@ message CFamilyGroups_CreateFamilyGroup_Request {
 
 message CFamilyGroups_CreateFamilyGroup_Response {
 	optional uint64 family_groupid = 1;
+	optional bool cooldown_skip_granted = 2;
 }
 
 message CFamilyGroups_DeleteFamilyGroup_Request {
@@ -40,6 +49,14 @@ message CFamilyGroups_DeleteFamilyGroup_Request {
 }
 
 message CFamilyGroups_DeleteFamilyGroup_Response {
+}
+
+message CFamilyGroups_ForceAcceptInvite_Request {
+	optional uint64 family_groupid = 1;
+	optional fixed64 steamid = 2;
+}
+
+message CFamilyGroups_ForceAcceptInvite_Response {
 }
 
 message CFamilyGroups_GetChangeLog_Request {
@@ -76,6 +93,7 @@ message CFamilyGroups_GetFamilyGroup_Response {
 
 message CFamilyGroups_GetFamilyGroupForUser_Request {
 	optional uint64 steamid = 1;
+	optional bool include_family_group_response = 2;
 }
 
 message CFamilyGroups_GetFamilyGroupForUser_Response {
@@ -86,6 +104,19 @@ message CFamilyGroups_GetFamilyGroupForUser_Response {
 	repeated .FamilyGroupPendingInviteForUser pending_group_invites = 5;
 	optional uint32 role = 6;
 	optional uint32 cooldown_seconds_remaining = 7;
+	optional .CFamilyGroups_GetFamilyGroup_Response family_group = 8;
+	optional bool can_undelete_last_joined_family = 9;
+}
+
+message CFamilyGroups_GetInviteCheckResults_Request {
+	optional uint64 family_groupid = 1;
+	optional fixed64 steamid = 2;
+}
+
+message CFamilyGroups_GetInviteCheckResults_Response {
+	optional bool wallet_country_matches = 1;
+	optional bool ip_match = 2;
+	optional uint32 join_restriction = 3;
 }
 
 message CFamilyGroups_GetPlaytimeSummary_Request {
@@ -94,11 +125,26 @@ message CFamilyGroups_GetPlaytimeSummary_Request {
 
 message CFamilyGroups_GetPlaytimeSummary_Response {
 	repeated .CFamilyGroups_PlaytimeEntry entries = 1;
+	repeated .CFamilyGroups_PlaytimeEntry entries_by_owner = 2;
+}
+
+message CFamilyGroups_GetPreferredLenders_Request {
+	optional uint64 family_groupid = 1;
+}
+
+message CFamilyGroups_GetPreferredLenders_Response {
+	repeated .CFamilyGroups_GetPreferredLenders_Response_FamilyMember members = 1;
+}
+
+message CFamilyGroups_GetPreferredLenders_Response_FamilyMember {
+	optional fixed64 steamid = 1;
+	repeated uint32 preferred_appids = 2;
 }
 
 message CFamilyGroups_GetPurchaseRequests_Request {
 	optional uint64 family_groupid = 1;
-	optional bool include_completed = 2;
+	repeated uint64 request_ids = 3;
+	optional uint32 rt_include_completed_since = 4;
 }
 
 message CFamilyGroups_GetPurchaseRequests_Response {
@@ -111,10 +157,13 @@ message CFamilyGroups_GetSharedLibraryApps_Request {
 	optional bool include_excluded = 3;
 	optional string language = 5;
 	optional uint32 max_apps = 6;
+	optional bool include_non_games = 7;
+	optional fixed64 steamid = 8;
 }
 
 message CFamilyGroups_GetSharedLibraryApps_Response {
 	repeated .CFamilyGroups_GetSharedLibraryApps_Response_SharedApp apps = 1;
+	optional fixed64 owner_steamid = 2;
 }
 
 message CFamilyGroups_GetSharedLibraryApps_Response_SharedApp {
@@ -123,9 +172,13 @@ message CFamilyGroups_GetSharedLibraryApps_Response_SharedApp {
 	optional string name = 6;
 	optional string sort_as = 7;
 	optional string capsule_filename = 8;
-	optional string img_icon_url = 9;
+	optional string img_icon_hash = 9;
 	optional int32 exclude_reason = 10 [default = 0, (.description) = "enum"];
 	optional uint32 rt_time_acquired = 11;
+	optional uint32 rt_last_played = 12;
+	optional uint32 rt_playtime = 13;
+	optional int32 app_type = 14 [default = 1, (.description) = "enum"];
+	repeated uint32 content_descriptors = 15;
 }
 
 message CFamilyGroups_GetUsersSharingDevice_Request {
@@ -155,6 +208,8 @@ message CFamilyGroups_JoinFamilyGroup_Request {
 
 message CFamilyGroups_JoinFamilyGroup_Response {
 	optional int32 two_factor_method = 2 [(.description) = "enum"];
+	optional bool cooldown_skip_granted = 3;
+	optional bool invite_already_accepted = 4;
 }
 
 message CFamilyGroups_ModifyFamilyGroupDetails_Request {
@@ -203,7 +258,6 @@ message CFamilyGroups_ResendInvitationToFamilyGroup_Response {
 
 message CFamilyGroups_RespondToRequestedPurchase_Request {
 	optional uint64 family_groupid = 1;
-	optional fixed64 purchase_requester_steamid = 2;
 	optional int32 action = 3 [(.description) = "enum"];
 	optional uint64 request_id = 4;
 }
@@ -217,6 +271,22 @@ message CFamilyGroups_SetFamilyCooldownOverrides_Request {
 }
 
 message CFamilyGroups_SetFamilyCooldownOverrides_Response {
+}
+
+message CFamilyGroups_SetPreferredLender_Request {
+	optional uint64 family_groupid = 1;
+	optional uint32 appid = 2;
+	optional fixed64 lender_steamid = 3;
+}
+
+message CFamilyGroups_SetPreferredLender_Response {
+}
+
+message CFamilyGroups_UndeleteFamilyGroup_Request {
+	optional uint64 family_groupid = 1;
+}
+
+message CFamilyGroups_UndeleteFamilyGroup_Response {
 }
 
 message CFamilyGroupsClient_GroupChanged_Notification {
@@ -238,7 +308,6 @@ message CFamilyGroupsClient_NotifyRunningApps_Notification_PlayingMember {
 
 message CFamilyGroupsClient_NotifyRunningApps_Notification_RunningApp {
 	optional uint32 appid = 1;
-	optional bool is_locked = 2;
 	repeated .CFamilyGroupsClient_NotifyRunningApps_Notification_PlayingMember playing_members = 3;
 }
 
@@ -250,6 +319,7 @@ message FamilyGroupMember {
 	optional fixed64 steamid = 1;
 	optional int32 role = 2 [(.description) = "enum"];
 	optional uint32 time_joined = 3;
+	optional uint32 cooldown_seconds_remaining = 4;
 }
 
 message FamilyGroupPendingInvite {
@@ -261,6 +331,7 @@ message FamilyGroupPendingInviteForUser {
 	optional uint64 family_groupid = 1;
 	optional int32 role = 2 [(.description) = "enum"];
 	optional fixed64 inviter_steamid = 3;
+	optional bool awaiting_2fa = 4;
 }
 
 message PurchaseRequest {
@@ -272,18 +343,26 @@ message PurchaseRequest {
 	optional int32 response_action = 6 [(.description) = "enum"];
 	optional bool is_completed = 7;
 	optional uint64 request_id = 8;
+	repeated uint32 requested_packageids = 9;
+	repeated uint32 purchased_packageids = 10;
+	repeated uint32 requested_bundleids = 11;
+	repeated uint32 purchased_bundleids = 12;
 }
 
 service FamilyGroups {
 	rpc CancelFamilyGroupInvite (.CFamilyGroups_CancelFamilyGroupInvite_Request) returns (.CFamilyGroups_CancelFamilyGroupInvite_Response);
+	rpc ClearCooldownSkip (.CFamilyGroups_ClearCooldownSkip_Request) returns (.CFamilyGroups_ClearCooldownSkip_Response);
 	rpc ConfirmInviteToFamilyGroup (.CFamilyGroups_ConfirmInviteToFamilyGroup_Request) returns (.CFamilyGroups_ConfirmInviteToFamilyGroup_Response);
 	rpc ConfirmJoinFamilyGroup (.CFamilyGroups_ConfirmJoinFamilyGroup_Request) returns (.CFamilyGroups_ConfirmJoinFamilyGroup_Response);
 	rpc CreateFamilyGroup (.CFamilyGroups_CreateFamilyGroup_Request) returns (.CFamilyGroups_CreateFamilyGroup_Response);
 	rpc DeleteFamilyGroup (.CFamilyGroups_DeleteFamilyGroup_Request) returns (.CFamilyGroups_DeleteFamilyGroup_Response);
+	rpc ForceAcceptInvite (.CFamilyGroups_ForceAcceptInvite_Request) returns (.CFamilyGroups_ForceAcceptInvite_Response);
 	rpc GetChangeLog (.CFamilyGroups_GetChangeLog_Request) returns (.CFamilyGroups_GetChangeLog_Response);
 	rpc GetFamilyGroup (.CFamilyGroups_GetFamilyGroup_Request) returns (.CFamilyGroups_GetFamilyGroup_Response);
 	rpc GetFamilyGroupForUser (.CFamilyGroups_GetFamilyGroupForUser_Request) returns (.CFamilyGroups_GetFamilyGroupForUser_Response);
+	rpc GetInviteCheckResults (.CFamilyGroups_GetInviteCheckResults_Request) returns (.CFamilyGroups_GetInviteCheckResults_Response);
 	rpc GetPlaytimeSummary (.CFamilyGroups_GetPlaytimeSummary_Request) returns (.CFamilyGroups_GetPlaytimeSummary_Response);
+	rpc GetPreferredLenders (.CFamilyGroups_GetPreferredLenders_Request) returns (.CFamilyGroups_GetPreferredLenders_Response);
 	rpc GetPurchaseRequests (.CFamilyGroups_GetPurchaseRequests_Request) returns (.CFamilyGroups_GetPurchaseRequests_Response);
 	rpc GetSharedLibraryApps (.CFamilyGroups_GetSharedLibraryApps_Request) returns (.CFamilyGroups_GetSharedLibraryApps_Response);
 	rpc GetUsersSharingDevice (.CFamilyGroups_GetUsersSharingDevice_Request) returns (.CFamilyGroups_GetUsersSharingDevice_Response);
@@ -295,6 +374,8 @@ service FamilyGroups {
 	rpc ResendInvitationToFamilyGroup (.CFamilyGroups_ResendInvitationToFamilyGroup_Request) returns (.CFamilyGroups_ResendInvitationToFamilyGroup_Response);
 	rpc RespondToRequestedPurchase (.CFamilyGroups_RespondToRequestedPurchase_Request) returns (.CFamilyGroups_RespondToRequestedPurchase_Response);
 	rpc SetFamilyCooldownOverrides (.CFamilyGroups_SetFamilyCooldownOverrides_Request) returns (.CFamilyGroups_SetFamilyCooldownOverrides_Response);
+	rpc SetPreferredLender (.CFamilyGroups_SetPreferredLender_Request) returns (.CFamilyGroups_SetPreferredLender_Response);
+	rpc UndeleteFamilyGroup (.CFamilyGroups_UndeleteFamilyGroup_Request) returns (.CFamilyGroups_UndeleteFamilyGroup_Response);
 }
 
 service FamilyGroupsClient {

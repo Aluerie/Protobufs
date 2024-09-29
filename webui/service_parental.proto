@@ -58,7 +58,7 @@ message CParental_GetParentalSettings_Response {
 
 message CParental_GetRequests_Request {
 	optional uint32 rt_include_completed_since = 1;
-	optional fixed64 steamid = 10;
+	optional fixed64 family_groupid = 2;
 }
 
 message CParental_GetRequests_Response {
@@ -221,6 +221,9 @@ message ParentalSettings {
 	optional uint32 rtime_temporary_feature_expiration = 14;
 	optional .ParentalPlaytimeRestrictions playtime_restrictions = 15;
 	optional .ParentalTemporaryPlaytimeRestrictions temporary_playtime_restrictions = 16;
+	repeated uint32 excluded_store_content_descriptors = 17;
+	repeated uint32 excluded_community_content_descriptors = 18;
+	repeated uint32 utility_appids = 19;
 }
 
 message ParentalTemporaryPlaytimeRestrictions {

@@ -69,7 +69,8 @@ message RecommendationDetails {
 	optional uint32 votes_funny = 24;
 	optional bool received_compensation = 25;
 	optional bool unverified_purchase = 26;
-	optional int32 review_quality = 27 [(.description) = "enum"];
+	repeated int32 review_qualities = 27 [(.description) = "enum"];
+	//optional int32 review_quality = 27 [(.description) = "enum"];
 	optional float weighted_vote_score = 28;
 	optional string moderation_note = 29;
 	optional int32 payment_method = 30;
@@ -86,6 +87,12 @@ message RecommendationDetails {
 	optional string ipaddress = 41;
 	optional bool hidden_in_steam_china = 42;
 	optional string steam_china_location = 43;
+	optional uint32 category_ascii_pct = 44;
+	optional uint32 category_meme_pct = 45;
+	optional uint32 category_offtopic_pct = 46;
+	optional uint32 category_uninformative_pct = 47;
+	optional uint32 category_votefarming_pct = 48;
+	optional int32 deck_playtime_at_review = 49;
 }
 
 service UserReviews {

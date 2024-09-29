@@ -1,3 +1,4 @@
+import "common_base.proto";
 import "common.proto";
 
 message CSteamCharts_GetBestOfYearPages_Request {
@@ -52,6 +53,25 @@ message CSteamCharts_GetMostPlayedGames_Response_MostPlayedRank {
 	optional uint32 daily_active_players = 6;
 }
 
+message CSteamCharts_GetMostPlayedSteamDeckGames_Request {
+	optional .StoreBrowseContext context = 1;
+	optional .StoreBrowseItemDataRequest data_request = 2;
+	optional int32 top_played_period = 3 [(.description) = "enum"];
+	optional int32 count = 4;
+}
+
+message CSteamCharts_GetMostPlayedSteamDeckGames_Response {
+	repeated .CSteamCharts_GetMostPlayedSteamDeckGames_Response_MostPlayedRank ranks = 1;
+	optional int32 top_played_period = 2 [(.description) = "enum"];
+}
+
+message CSteamCharts_GetMostPlayedSteamDeckGames_Response_MostPlayedRank {
+	optional int32 rank = 1;
+	optional uint32 appid = 2;
+	optional .StoreItem item = 3;
+	optional int32 last_period_rank = 4;
+}
+
 message CSteamCharts_GetTopReleasesPages_Request {
 }
 
@@ -70,6 +90,7 @@ service SteamCharts {
 	rpc GetBestOfYearPages (.CSteamCharts_GetBestOfYearPages_Request) returns (.CSteamCharts_GetBestOfYearPages_Response);
 	rpc GetGamesByConcurrentPlayers (.CSteamCharts_GetGamesByConcurrentPlayers_Request) returns (.CSteamCharts_GetGamesByConcurrentPlayers_Response);
 	rpc GetMostPlayedGames (.CSteamCharts_GetMostPlayedGames_Request) returns (.CSteamCharts_GetMostPlayedGames_Response);
+	rpc GetMostPlayedSteamDeckGames (.CSteamCharts_GetMostPlayedSteamDeckGames_Request) returns (.CSteamCharts_GetMostPlayedSteamDeckGames_Response);
 	rpc GetTopReleasesPages (.CSteamCharts_GetTopReleasesPages_Request) returns (.CSteamCharts_GetTopReleasesPages_Response);
 }
 
