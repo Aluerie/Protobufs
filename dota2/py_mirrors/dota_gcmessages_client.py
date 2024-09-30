@@ -104,6 +104,12 @@ class EDOTADraftTriviaAnswerResult(betterproto.Enum):
     k_EDOTADraftTriviaAnswerResult_GCDown = 5
 
 
+class CMsgClientToGCUpdateComicBookStat_Type(betterproto.Enum):
+    CMsgClientToGCUpdateComicBookStat_Type_HighestPageRead = 1
+    CMsgClientToGCUpdateComicBookStat_Type_SecondsSpentReading = 2
+    CMsgClientToGCUpdateComicBookStat_Type_HighestPercentRead = 3
+
+
 class CMsgDOTAPopupPopupID(betterproto.Enum):
     NONE = -1
     KICKED_FROM_LOBBY = 0
@@ -203,24 +209,6 @@ class CMsgDOTASubmitPlayerReportResponseV2EResult(betterproto.Enum):
     k_eNoRemainingReports = 12
     k_eInvalidMember = 13
     k_eCannotReportPartyMember = 14
-
-
-class CMsgDOTAClaimEventActionResponseResultCode(betterproto.Enum):
-    Success = 0
-    InvalidEvent = 1
-    EventNotActive = 2
-    InvalidAction = 3
-    ServerError = 4
-    InsufficientPoints = 5
-    InsufficentLevel = 6
-    AlreadyClaimed = 7
-    SDOLockFailure = 8
-    SDOLoadFailure = 9
-    EventNotOwned = 10
-    Timeout = 11
-    RequiresPlusSubscription = 12
-    InvalidItem = 13
-    AsyncRewards = 14
 
 
 class CMsgGCNotificationsUpdateEResult(betterproto.Enum):
@@ -957,7 +945,7 @@ class CMsgDOTAWelcomeCExtraMsg(betterproto.Message):
 @dataclass
 class CSODOTAGameHeroFavorites(betterproto.Message):
     account_id: int = betterproto.uint32_field(1)
-    hero_id: int = betterproto.uint32_field(2)
+    hero_id: int = betterproto.int32_field(2)
 
 
 @dataclass
@@ -1062,7 +1050,7 @@ class CMsgGCGetHeroStandingsResponse(betterproto.Message):
 
 @dataclass
 class CMsgGCGetHeroStandingsResponseHero(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     wins: int = betterproto.uint32_field(2)
     losses: int = betterproto.uint32_field(3)
     win_streak: int = betterproto.uint32_field(4)
@@ -1127,7 +1115,7 @@ class CMatchPlayerTimedStatStdDeviations(betterproto.Message):
 
 @dataclass
 class CMsgGCGetHeroTimedStatsResponse(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     rank_chunked_stats: List[
         "CMsgGCGetHeroTimedStatsResponseRankChunkedStats"
     ] = betterproto.message_field(2)
@@ -1193,12 +1181,6 @@ class CMsgGCItemEditorReleaseReservationResponse(betterproto.Message):
 
 
 @dataclass
-class CMsgDOTARewardTutorialPrizes(betterproto.Message):
-    location_id: int = betterproto.uint32_field(1)
-    tracking_only: bool = betterproto.bool_field(2)
-
-
-@dataclass
 class CMsgFlipLobbyTeams(betterproto.Message):
     pass
 
@@ -1230,39 +1212,6 @@ class CMsgDOTAClaimEventAction(betterproto.Message):
     action_id: int = betterproto.uint32_field(2)
     quantity: int = betterproto.uint32_field(3)
     data: "CMsgDOTAClaimEventActionData" = betterproto.message_field(4)
-
-
-@dataclass
-class CMsgDOTAClaimEventActionResponse(betterproto.Message):
-    result: "CMsgDOTAClaimEventActionResponseResultCode" = betterproto.enum_field(1)
-    reward_results: List[
-        "CMsgDOTAClaimEventActionResponseGrantedRewardData"
-    ] = betterproto.message_field(2)
-
-
-@dataclass
-class CMsgDOTAClaimEventActionResponseMysteryItemRewardData(betterproto.Message):
-    item_def: int = betterproto.uint32_field(1)
-    item_category: int = betterproto.uint32_field(2)
-
-
-@dataclass
-class CMsgDOTAClaimEventActionResponseLootListRewardData(betterproto.Message):
-    item_def: List[int] = betterproto.uint32_field(1)
-
-
-@dataclass
-class CMsgDOTAClaimEventActionResponseActionListRewardData(betterproto.Message):
-    action_id: int = betterproto.uint32_field(1)
-    result_reward_data: bytes = betterproto.bytes_field(2)
-
-
-@dataclass
-class CMsgDOTAClaimEventActionResponseGrantedRewardData(betterproto.Message):
-    grant_index: int = betterproto.uint32_field(1)
-    score_index: int = betterproto.uint32_field(2)
-    reward_index: int = betterproto.uint32_field(3)
-    reward_data: bytes = betterproto.bytes_field(4)
 
 
 @dataclass
@@ -1346,6 +1295,16 @@ class CMsgDOTACompendiumSelectionResponse(betterproto.Message):
 
 
 @dataclass
+class CMsgDOTACompendiumRemoveAllSelections(betterproto.Message):
+    leagueid: int = betterproto.uint32_field(1)
+
+
+@dataclass
+class CMsgDOTACompendiumRemoveAllSelectionsResponse(betterproto.Message):
+    eresult: int = betterproto.uint32_field(1)
+
+
+@dataclass
 class CMsgDOTACompendiumData(betterproto.Message):
     selections: List["CMsgDOTACompendiumSelection"] = betterproto.message_field(1)
 
@@ -1369,7 +1328,7 @@ class CMsgDOTAGetPlayerMatchHistory(betterproto.Message):
     account_id: int = betterproto.uint32_field(1)
     start_at_match_id: int = betterproto.uint64_field(2)
     matches_requested: int = betterproto.uint32_field(3)
-    hero_id: int = betterproto.uint32_field(4)
+    hero_id: int = betterproto.int32_field(4)
     request_id: int = betterproto.uint32_field(5)
     include_practice_matches: bool = betterproto.bool_field(7)
     include_custom_games: bool = betterproto.bool_field(8)
@@ -1388,7 +1347,7 @@ class CMsgDOTAGetPlayerMatchHistoryResponse(betterproto.Message):
 class CMsgDOTAGetPlayerMatchHistoryResponseMatch(betterproto.Message):
     match_id: int = betterproto.uint64_field(1)
     start_time: int = betterproto.uint32_field(2)
-    hero_id: int = betterproto.uint32_field(3)
+    hero_id: int = betterproto.int32_field(3)
     winner: bool = betterproto.bool_field(4)
     game_mode: int = betterproto.uint32_field(5)
     rank_change: int = betterproto.int32_field(6)
@@ -1407,6 +1366,7 @@ class CMsgDOTAGetPlayerMatchHistoryResponseMatch(betterproto.Message):
     team_id: int = betterproto.uint32_field(19)
     team_name: str = betterproto.string_field(20)
     ugc_team_ui_logo: int = betterproto.uint64_field(21)
+    selected_facet: int = betterproto.uint32_field(22)
 
 
 @dataclass
@@ -1487,7 +1447,7 @@ class CMsgClientToGCGetAllHeroOrder(betterproto.Message):
 
 @dataclass
 class CMsgClientToGCGetAllHeroOrderResponse(betterproto.Message):
-    hero_ids: List[int] = betterproto.uint32_field(1)
+    hero_ids: List[int] = betterproto.int32_field(1)
 
 
 @dataclass
@@ -1498,7 +1458,7 @@ class CMsgClientToGCGetAllHeroProgress(betterproto.Message):
 @dataclass
 class CMsgClientToGCGetAllHeroProgressResponse(betterproto.Message):
     account_id: int = betterproto.uint32_field(1)
-    curr_hero_id: int = betterproto.uint32_field(2)
+    curr_hero_id: int = betterproto.int32_field(2)
     laps_completed: int = betterproto.uint32_field(3)
     curr_hero_games: int = betterproto.uint32_field(4)
     curr_lap_time_started: int = betterproto.uint32_field(5)
@@ -1507,8 +1467,8 @@ class CMsgClientToGCGetAllHeroProgressResponse(betterproto.Message):
     best_lap_time: int = betterproto.uint32_field(8)
     lap_heroes_completed: int = betterproto.uint32_field(9)
     lap_heroes_remaining: int = betterproto.uint32_field(10)
-    next_hero_id: int = betterproto.uint32_field(11)
-    prev_hero_id: int = betterproto.uint32_field(12)
+    next_hero_id: int = betterproto.int32_field(11)
+    prev_hero_id: int = betterproto.int32_field(12)
     prev_hero_games: int = betterproto.uint32_field(13)
     prev_avg_tries: float = betterproto.float_field(14)
     curr_avg_tries: float = betterproto.float_field(15)
@@ -1516,7 +1476,7 @@ class CMsgClientToGCGetAllHeroProgressResponse(betterproto.Message):
     full_lap_avg_tries: float = betterproto.float_field(17)
     curr_lap_avg_tries: float = betterproto.float_field(18)
     profile_name: str = betterproto.string_field(19)
-    start_hero_id: int = betterproto.uint32_field(20)
+    start_hero_id: int = betterproto.int32_field(20)
 
 
 @dataclass
@@ -1593,7 +1553,7 @@ class CMsgClientToGCGetProfileCardStats(betterproto.Message):
 @dataclass
 class CMsgClientToGCCreateHeroStatue(betterproto.Message):
     source_item_id: int = betterproto.uint64_field(1)
-    hero_id: int = betterproto.uint32_field(3)
+    hero_id: int = betterproto.int32_field(3)
     sequence_name: str = betterproto.string_field(4)
     cycle: float = betterproto.float_field(5)
     wearables: List[int] = betterproto.uint32_field(6)
@@ -1785,7 +1745,7 @@ class CMsgClientToGCGetQuestProgressResponseChallenge(betterproto.Message):
     challenge_id: int = betterproto.uint32_field(1)
     time_completed: int = betterproto.uint32_field(2)
     attempts: int = betterproto.uint32_field(3)
-    hero_id: int = betterproto.uint32_field(4)
+    hero_id: int = betterproto.int32_field(4)
     template_id: int = betterproto.uint32_field(5)
     quest_rank: int = betterproto.uint32_field(6)
 
@@ -1805,12 +1765,12 @@ class CMsgGCToClientMatchSignedOut(betterproto.Message):
 
 @dataclass
 class CMsgGCGetHeroStatsHistory(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
 
 
 @dataclass
 class CMsgGCGetHeroStatsHistoryResponse(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     records: List["CMsgDOTASDOHeroStatsHistory"] = betterproto.message_field(2)
 
 
@@ -2073,7 +2033,7 @@ class CMsgGCToClientQuestProgressUpdatedChallenge(betterproto.Message):
     challenge_id: int = betterproto.uint32_field(1)
     time_completed: int = betterproto.uint32_field(2)
     attempts: int = betterproto.uint32_field(3)
-    hero_id: int = betterproto.uint32_field(4)
+    hero_id: int = betterproto.int32_field(4)
     template_id: int = betterproto.uint32_field(5)
     quest_rank: int = betterproto.uint32_field(6)
     max_quest_rank: int = betterproto.uint32_field(7)
@@ -2715,13 +2675,13 @@ class CMsgGCToClientCommendNotification(betterproto.Message):
     commender_account_id: int = betterproto.uint32_field(1)
     commender_name: str = betterproto.string_field(2)
     flags: int = betterproto.uint32_field(3)
-    commender_hero_id: int = betterproto.uint32_field(4)
+    commender_hero_id: int = betterproto.int32_field(4)
 
 
 @dataclass
 class CMsgDOTAClientToGCQuickStatsRequest(betterproto.Message):
     player_account_id: int = betterproto.uint32_field(1)
-    hero_id: int = betterproto.uint32_field(2)
+    hero_id: int = betterproto.int32_field(2)
     item_id: int = betterproto.int32_field(3)
     league_id: int = betterproto.uint32_field(4)
 
@@ -2814,7 +2774,7 @@ class CMsgPurchaseItemWithEventPointsResponse(betterproto.Message):
 
 @dataclass
 class CMsgPurchaseHeroRandomRelic(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     relic_rarity: "EHeroRelicRarity" = betterproto.enum_field(2)
 
 
@@ -2855,7 +2815,7 @@ class CMsgProfileResponse(betterproto.Message):
 
 @dataclass
 class CMsgProfileResponseFeaturedHero(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     equipped_econ_items: List["CSOEconItem"] = betterproto.message_field(2)
     manually_set: bool = betterproto.bool_field(3)
     plus_hero_xp: int = betterproto.uint32_field(4)
@@ -2867,14 +2827,14 @@ class CMsgProfileResponseMatchInfo(betterproto.Message):
     match_id: int = betterproto.uint64_field(1)
     match_timestamp: int = betterproto.uint32_field(2)
     performance_rating: int = betterproto.sint32_field(3)
-    hero_id: int = betterproto.uint32_field(4)
+    hero_id: int = betterproto.int32_field(4)
     won_match: bool = betterproto.bool_field(5)
 
 
 @dataclass
 class CMsgProfileUpdate(betterproto.Message):
     background_item_id: int = betterproto.uint64_field(1)
-    featured_hero_ids: List[int] = betterproto.uint32_field(2)
+    featured_hero_ids: List[int] = betterproto.int32_field(2)
 
 
 @dataclass
@@ -2905,12 +2865,12 @@ class CMsgGlobalHeroAverages(betterproto.Message):
 
 @dataclass
 class CMsgHeroGlobalDataRequest(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
 
 
 @dataclass
 class CMsgHeroGlobalDataResponse(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     hero_data_per_chunk: List[
         "CMsgHeroGlobalDataResponseHeroDataPerRankChunk"
     ] = betterproto.message_field(2)
@@ -2957,9 +2917,9 @@ class CMsgHeroGlobalDataHeroesAlliesAndEnemies(betterproto.Message):
 
 @dataclass
 class CMsgHeroGlobalDataHeroesAlliesAndEnemiesHeroData(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     win_rate: int = betterproto.uint32_field(2)
-    first_other_hero_id: int = betterproto.uint32_field(3)
+    first_other_hero_id: int = betterproto.int32_field(3)
     ally_win_rate: List[int] = betterproto.uint32_field(5)
     enemy_win_rate: List[int] = betterproto.uint32_field(6)
 
@@ -2990,7 +2950,7 @@ class CMsgActivatePlusFreeTrialResponse(betterproto.Message):
 @dataclass
 class CMsgGCToClientCavernCrawlMapPathCompleted(betterproto.Message):
     event_id: int = betterproto.uint32_field(1)
-    hero_id_completed: int = betterproto.uint32_field(2)
+    hero_id_completed: int = betterproto.int32_field(2)
     completed_paths: List[
         "CMsgGCToClientCavernCrawlMapPathCompletedCompletedPathInfo"
     ] = betterproto.message_field(3)
@@ -3518,7 +3478,7 @@ class CMsgClientToGCRequestPlayerRecentAccomplishmentsResponse(betterproto.Messa
 @dataclass
 class CMsgClientToGCRequestPlayerHeroRecentAccomplishments(betterproto.Message):
     account_id: int = betterproto.uint32_field(1)
-    hero_id: int = betterproto.uint32_field(2)
+    hero_id: int = betterproto.int32_field(2)
 
 
 @dataclass
@@ -3672,7 +3632,7 @@ class CMsgClientToGCRequestReporterUpdatesResponse(betterproto.Message):
 @dataclass
 class CMsgClientToGCRequestReporterUpdatesResponseReporterUpdate(betterproto.Message):
     match_id: int = betterproto.uint64_field(1)
-    hero_id: int = betterproto.uint32_field(2)
+    hero_id: int = betterproto.int32_field(2)
     report_reason: int = betterproto.uint32_field(3)
     timestamp: int = betterproto.uint32_field(4)
 
@@ -3718,7 +3678,7 @@ class CMsgClientToGCGetOWMatchDetailsResponse(betterproto.Message):
         "CMsgClientToGCGetOWMatchDetailsResponseMarker"
     ] = betterproto.message_field(7)
     report_reason: "EOverwatchReportReason" = betterproto.enum_field(8)
-    target_hero_id: int = betterproto.uint32_field(9)
+    target_hero_id: int = betterproto.int32_field(9)
     rank_tier: int = betterproto.uint32_field(10)
     lane_selection_flags: int = betterproto.uint32_field(11)
 
@@ -3947,7 +3907,7 @@ class CMsgClientToGCOrderStickerbookTeamPageResponse(betterproto.Message):
 
 @dataclass
 class CMsgClientToGCSetHeroSticker(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     new_item_id: int = betterproto.uint64_field(2)
     old_item_id: int = betterproto.uint64_field(3)
 
@@ -4113,3 +4073,45 @@ class CMsgLobbyRoadToTIMatchQuestData(betterproto.Message):
     quest_data: "CMsgRoadToTIAssignedQuest" = betterproto.message_field(1)
     quest_period: int = betterproto.uint32_field(2)
     quest_number: int = betterproto.uint32_field(3)
+
+
+@dataclass
+class CMsgClientToGCNewBloomGift(betterproto.Message):
+    defindex: int = betterproto.uint32_field(1)
+    lobby_id: int = betterproto.uint64_field(2)
+    target_account_ids: List[int] = betterproto.uint32_field(3)
+
+
+@dataclass
+class CMsgClientToGCNewBloomGiftResponse(betterproto.Message):
+    result: "ENewBloomGiftingResponse" = betterproto.enum_field(1)
+    received_account_ids: List[int] = betterproto.uint32_field(2)
+
+
+@dataclass
+class CMsgClientToGCSetBannedHeroes(betterproto.Message):
+    banned_hero_ids: List[int] = betterproto.int32_field(1)
+
+
+@dataclass
+class CMsgClientToGCUpdateComicBookStats(betterproto.Message):
+    comic_id: int = betterproto.uint32_field(1)
+    stats: List[
+        "CMsgClientToGCUpdateComicBookStatsSingleStat"
+    ] = betterproto.message_field(2)
+    language_stats: "CMsgClientToGCUpdateComicBookStatsLanguageStats" = (
+        betterproto.message_field(3)
+    )
+
+
+@dataclass
+class CMsgClientToGCUpdateComicBookStatsSingleStat(betterproto.Message):
+    stat_type: "CMsgClientToGCUpdateComicBookStat_Type" = betterproto.enum_field(1)
+    stat_value: int = betterproto.uint32_field(2)
+
+
+@dataclass
+class CMsgClientToGCUpdateComicBookStatsLanguageStats(betterproto.Message):
+    comic_id: int = betterproto.uint32_field(1)
+    client_language: int = betterproto.uint32_field(2)
+    client_comic_language: int = betterproto.uint32_field(3)

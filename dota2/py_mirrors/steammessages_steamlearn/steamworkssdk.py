@@ -58,8 +58,9 @@ class ESteamLearnSnapshotProjectResult(betterproto.Enum):
     STEAMLEARN_SNAPSHOT_PROJECT_ERROR_INVALID_PUBLISHED_VERSION = 12
 
 
-class ESteamLearnGetHMACKeysResult(betterproto.Enum):
-    STEAMLEARN_GET_HMAC_KEYS_SUCCESS = 0
+class ESteamLearnGetAccessTokensResult(betterproto.Enum):
+    STEAMLEARN_GET_ACCESS_TOKENS_ERROR = 0
+    STEAMLEARN_GET_ACCESS_TOKENS_SUCCESS = 1
 
 
 class ESteamLearnInferenceResult(betterproto.Enum):
@@ -138,16 +139,8 @@ class CMsgSteamLearnDataList(betterproto.Message):
 
 
 @dataclass
-class CMsgSteamLearn_AccessData(betterproto.Message):
-    publisher_id: int = betterproto.uint32_field(1)
-    timestamp: int = betterproto.uint32_field(2)
-    random_value: int = betterproto.uint64_field(3)
-
-
-@dataclass
 class CMsgSteamLearn_RegisterDataSource_Request(betterproto.Message):
     access_token: str = betterproto.string_field(1)
-    access_data: "CMsgSteamLearn_AccessData" = betterproto.message_field(2)
     data_source: "CMsgSteamLearnDataSource" = betterproto.message_field(3)
 
 
@@ -160,7 +153,6 @@ class CMsgSteamLearn_RegisterDataSource_Response(betterproto.Message):
 @dataclass
 class CMsgSteamLearn_CacheData_Request(betterproto.Message):
     access_token: str = betterproto.string_field(1)
-    access_data: "CMsgSteamLearn_AccessData" = betterproto.message_field(2)
     data: "CMsgSteamLearnData" = betterproto.message_field(3)
 
 
@@ -172,7 +164,6 @@ class CMsgSteamLearn_CacheData_Response(betterproto.Message):
 @dataclass
 class CMsgSteamLearn_SnapshotProject_Request(betterproto.Message):
     access_token: str = betterproto.string_field(1)
-    access_data: "CMsgSteamLearn_AccessData" = betterproto.message_field(2)
     project_id: int = betterproto.uint32_field(3)
     published_version: int = betterproto.uint32_field(7)
     keys: List[int] = betterproto.uint64_field(4)
@@ -193,6 +184,9 @@ class CMsgSteamLearn_BatchOperation_Request(betterproto.Message):
     snapshot_requests: List[
         "CMsgSteamLearn_SnapshotProject_Request"
     ] = betterproto.message_field(2)
+    inference_requests: List[
+        "CMsgSteamLearn_Inference_Request"
+    ] = betterproto.message_field(3)
 
 
 @dataclass
@@ -203,48 +197,57 @@ class CMsgSteamLearn_BatchOperation_Response(betterproto.Message):
     snapshot_responses: List[
         "CMsgSteamLearn_SnapshotProject_Response"
     ] = betterproto.message_field(2)
-
-
-@dataclass
-class CMsgSteamLearnHMACKeys(betterproto.Message):
-    register_data_source_key: str = betterproto.string_field(1)
-    cache_data_keys: List[
-        "CMsgSteamLearnHMACKeysCacheDataKeys"
-    ] = betterproto.message_field(2)
-    snapshot_project_keys: List[
-        "CMsgSteamLearnHMACKeysSnapshotProjectKeys"
+    inference_responses: List[
+        "CMsgSteamLearn_Inference_Response"
     ] = betterproto.message_field(3)
 
 
 @dataclass
-class CMsgSteamLearnHMACKeysCacheDataKeys(betterproto.Message):
+class CMsgSteamLearnAccessTokens(betterproto.Message):
+    register_data_source_access_token: str = betterproto.string_field(1)
+    cache_data_access_tokens: List[
+        "CMsgSteamLearnAccessTokensCacheDataAccessToken"
+    ] = betterproto.message_field(2)
+    snapshot_project_access_tokens: List[
+        "CMsgSteamLearnAccessTokensSnapshotProjectAccessToken"
+    ] = betterproto.message_field(3)
+    inference_access_tokens: List[
+        "CMsgSteamLearnAccessTokensInferenceAccessToken"
+    ] = betterproto.message_field(4)
+
+
+@dataclass
+class CMsgSteamLearnAccessTokensCacheDataAccessToken(betterproto.Message):
     data_source_id: int = betterproto.uint32_field(1)
-    version: int = betterproto.uint32_field(3)
-    key: str = betterproto.string_field(2)
+    access_token: str = betterproto.string_field(2)
 
 
 @dataclass
-class CMsgSteamLearnHMACKeysSnapshotProjectKeys(betterproto.Message):
+class CMsgSteamLearnAccessTokensSnapshotProjectAccessToken(betterproto.Message):
     project_id: int = betterproto.uint32_field(1)
-    published_version: int = betterproto.uint32_field(3)
-    key: str = betterproto.string_field(2)
+    access_token: str = betterproto.string_field(2)
 
 
 @dataclass
-class CMsgSteamLearn_GetHMACKeys_Request(betterproto.Message):
+class CMsgSteamLearnAccessTokensInferenceAccessToken(betterproto.Message):
+    project_id: int = betterproto.uint32_field(1)
+    access_token: str = betterproto.string_field(2)
+
+
+@dataclass
+class CMsgSteamLearn_GetAccessTokens_Request(betterproto.Message):
     appid: int = betterproto.uint32_field(1)
 
 
 @dataclass
-class CMsgSteamLearn_GetHMACKeys_Response(betterproto.Message):
-    result: "ESteamLearnGetHMACKeysResult" = betterproto.enum_field(1)
-    keys: "CMsgSteamLearnHMACKeys" = betterproto.message_field(2)
+class CMsgSteamLearn_GetAccessTokens_Response(betterproto.Message):
+    result: "ESteamLearnGetAccessTokensResult" = betterproto.enum_field(1)
+    access_tokens: "CMsgSteamLearnAccessTokens" = betterproto.message_field(2)
 
 
 @dataclass
 class CMsgSteamLearn_Inference_Request(betterproto.Message):
     access_token: str = betterproto.string_field(1)
-    access_data: "CMsgSteamLearn_AccessData" = betterproto.message_field(2)
     project_id: int = betterproto.uint32_field(3)
     published_version: int = betterproto.uint32_field(4)
     override_train_id: int = betterproto.uint32_field(5)
@@ -255,7 +258,6 @@ class CMsgSteamLearn_Inference_Request(betterproto.Message):
 @dataclass
 class CMsgSteamLearn_InferenceMetadata_Request(betterproto.Message):
     access_token: str = betterproto.string_field(1)
-    access_data: "CMsgSteamLearn_AccessData" = betterproto.message_field(2)
     project_id: int = betterproto.uint32_field(3)
     published_version: int = betterproto.uint32_field(4)
     override_train_id: int = betterproto.uint32_field(5)
@@ -384,6 +386,11 @@ class CMsgSteamLearn_InferenceBackend_Response(betterproto.Message):
 
 
 @dataclass
+class CMsgSteamLearn_InferenceBackend_ResponseRegressionOutput(betterproto.Message):
+    value: float = betterproto.float_field(1)
+
+
+@dataclass
 class CMsgSteamLearn_InferenceBackend_ResponseBinaryCrossEntropyOutput(
     betterproto.Message
 ):
@@ -417,6 +424,9 @@ class CMsgSteamLearn_InferenceBackend_ResponseOutput(betterproto.Message):
     multi_binary_crossentropy: "CMsgSteamLearn_InferenceBackend_ResponseMutliBinaryCrossEntropyOutput" = betterproto.message_field(
         3, group="ResponseType"
     )
+    regression: "CMsgSteamLearn_InferenceBackend_ResponseRegressionOutput" = (
+        betterproto.message_field(4, group="ResponseType")
+    )
 
 
 @dataclass
@@ -425,6 +435,7 @@ class CMsgSteamLearn_Inference_Response(betterproto.Message):
     backend_response: "CMsgSteamLearn_InferenceBackend_Response" = (
         betterproto.message_field(2)
     )
+    keys: List[int] = betterproto.uint64_field(3)
 
 
 class SteamLearnStub(betterproto.ServiceStub):
@@ -432,13 +443,10 @@ class SteamLearnStub(betterproto.ServiceStub):
         self,
         *,
         access_token: str = "",
-        access_data: Optional["CMsgSteamLearn_AccessData"] = None,
         data_source: Optional["CMsgSteamLearnDataSource"] = None,
     ) -> CMsgSteamLearn_RegisterDataSource_Response:
         request = CMsgSteamLearn_RegisterDataSource_Request()
         request.access_token = access_token
-        if access_data is not None:
-            request.access_data = access_data
         if data_source is not None:
             request.data_source = data_source
 
@@ -449,16 +457,10 @@ class SteamLearnStub(betterproto.ServiceStub):
         )
 
     async def cache_data(
-        self,
-        *,
-        access_token: str = "",
-        access_data: Optional["CMsgSteamLearn_AccessData"] = None,
-        data: Optional["CMsgSteamLearnData"] = None,
+        self, *, access_token: str = "", data: Optional["CMsgSteamLearnData"] = None
     ) -> CMsgSteamLearn_CacheData_Response:
         request = CMsgSteamLearn_CacheData_Request()
         request.access_token = access_token
-        if access_data is not None:
-            request.access_data = access_data
         if data is not None:
             request.data = data
 
@@ -472,7 +474,6 @@ class SteamLearnStub(betterproto.ServiceStub):
         self,
         *,
         access_token: str = "",
-        access_data: Optional["CMsgSteamLearn_AccessData"] = None,
         project_id: int = 0,
         published_version: int = 0,
         keys: List[int] = [],
@@ -481,8 +482,6 @@ class SteamLearnStub(betterproto.ServiceStub):
     ) -> CMsgSteamLearn_SnapshotProject_Response:
         request = CMsgSteamLearn_SnapshotProject_Request()
         request.access_token = access_token
-        if access_data is not None:
-            request.access_data = access_data
         request.project_id = project_id
         request.published_version = published_version
         request.keys = keys
@@ -501,12 +500,15 @@ class SteamLearnStub(betterproto.ServiceStub):
         *,
         cache_data_requests: List["CMsgSteamLearn_CacheData_Request"] = [],
         snapshot_requests: List["CMsgSteamLearn_SnapshotProject_Request"] = [],
+        inference_requests: List["CMsgSteamLearn_Inference_Request"] = [],
     ) -> CMsgSteamLearn_BatchOperation_Response:
         request = CMsgSteamLearn_BatchOperation_Request()
         if cache_data_requests is not None:
             request.cache_data_requests = cache_data_requests
         if snapshot_requests is not None:
             request.snapshot_requests = snapshot_requests
+        if inference_requests is not None:
+            request.inference_requests = inference_requests
 
         return await self._unary_unary(
             "/.SteamLearn/BatchOperation",
@@ -514,23 +516,22 @@ class SteamLearnStub(betterproto.ServiceStub):
             CMsgSteamLearn_BatchOperation_Response,
         )
 
-    async def get_h_m_a_c_keys(
+    async def get_access_tokens(
         self, *, appid: int = 0
-    ) -> CMsgSteamLearn_GetHMACKeys_Response:
-        request = CMsgSteamLearn_GetHMACKeys_Request()
+    ) -> CMsgSteamLearn_GetAccessTokens_Response:
+        request = CMsgSteamLearn_GetAccessTokens_Request()
         request.appid = appid
 
         return await self._unary_unary(
-            "/.SteamLearn/GetHMACKeys",
+            "/.SteamLearn/GetAccessTokens",
             request,
-            CMsgSteamLearn_GetHMACKeys_Response,
+            CMsgSteamLearn_GetAccessTokens_Response,
         )
 
     async def inference(
         self,
         *,
         access_token: str = "",
-        access_data: Optional["CMsgSteamLearn_AccessData"] = None,
         project_id: int = 0,
         published_version: int = 0,
         override_train_id: int = 0,
@@ -539,8 +540,6 @@ class SteamLearnStub(betterproto.ServiceStub):
     ) -> CMsgSteamLearn_Inference_Response:
         request = CMsgSteamLearn_Inference_Request()
         request.access_token = access_token
-        if access_data is not None:
-            request.access_data = access_data
         request.project_id = project_id
         request.published_version = published_version
         request.override_train_id = override_train_id
@@ -558,15 +557,12 @@ class SteamLearnStub(betterproto.ServiceStub):
         self,
         *,
         access_token: str = "",
-        access_data: Optional["CMsgSteamLearn_AccessData"] = None,
         project_id: int = 0,
         published_version: int = 0,
         override_train_id: int = 0,
     ) -> CMsgSteamLearn_InferenceMetadata_Response:
         request = CMsgSteamLearn_InferenceMetadata_Request()
         request.access_token = access_token
-        if access_data is not None:
-            request.access_data = access_data
         request.project_id = project_id
         request.published_version = published_version
         request.override_train_id = override_train_id

@@ -65,6 +65,7 @@ class DotaunitorderT(betterproto.Enum):
     DOTA_UNIT_ORDER_TAKE_ITEM_FROM_NEUTRAL_ITEM_STASH = 38
     DOTA_UNIT_ORDER_MOVE_RELATIVE = 39
     DOTA_UNIT_ORDER_CAST_TOGGLE_ALT = 40
+    DOTA_UNIT_ORDER_CONSUME_ITEM = 41
 
 
 class EDOTAVersusScenePlayerBehavior(betterproto.Enum):

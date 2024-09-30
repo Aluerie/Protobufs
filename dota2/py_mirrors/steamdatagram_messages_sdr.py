@@ -194,6 +194,7 @@ class CMsgSteamDatagramGameserverPingReplyData(betterproto.Message):
     build: str = betterproto.string_field(9)
     network_config_version: int = betterproto.uint64_field(10)
     my_unix_time: float = betterproto.fixed32_field(11)
+    routing_blob: bytes = betterproto.bytes_field(12)
 
 
 @dataclass

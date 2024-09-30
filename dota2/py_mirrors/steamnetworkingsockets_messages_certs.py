@@ -15,7 +15,6 @@ class CMsgSteamDatagramCertificateEKeyType(betterproto.Enum):
 @dataclass
 class CMsgSteamNetworkingIdentityLegacyBinary(betterproto.Message):
     steam_id: float = betterproto.fixed64_field(16)
-    xbox_pairwise_id: str = betterproto.string_field(17)
     generic_bytes: bytes = betterproto.bytes_field(2)
     generic_string: str = betterproto.string_field(3)
     ipv6_and_port: bytes = betterproto.bytes_field(4)

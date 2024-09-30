@@ -46,6 +46,7 @@ class EGCItemMsg(betterproto.Enum):
     k_EMsgGCResetStrangeGemCountResponse = 1095
     k_EMsgGCServerUseItemRequest = 1103
     k_EMsgGCAddGiftItem = 1104
+    k_EMsgSQLGCToGCRevokeUntrustedGift = 1105
     k_EMsgClientToGCRemoveItemGifterAttributes = 1109
     k_EMsgClientToGCRemoveItemName = 1110
     k_EMsgClientToGCRemoveItemDescription = 1111
@@ -132,6 +133,13 @@ class EGCItemMsg(betterproto.Enum):
     k_EMsgClientToGCGetLimitedItemPurchaseQuantity = 2609
     k_EMsgClientToGCGetLimitedItemPurchaseQuantityResponse = 2610
     k_EMsgGCToGCBetaDeleteItems = 2611
+    k_EMsgClientToGCGetInFlightItemCharges = 2612
+    k_EMsgClientToGCGetInFlightItemChargesResponse = 2613
+    k_EMsgGCToClientInFlightChargesUpdated = 2614
+    k_EMsgClientToGCPurchaseChargeCostItems = 2615
+    k_EMsgClientToGCPurchaseChargeCostItemsResponse = 2616
+    k_EMsgClientToGCCancelUnfinalizedTransactions = 2617
+    k_EMsgClientToGCCancelUnfinalizedTransactionsResponse = 2618
 
 
 class EGCMsgInitiateTradeResponse(betterproto.Enum):
@@ -261,6 +269,28 @@ class CMsgClientToGCGetLimitedItemPurchaseQuantityResponseEResponse(betterproto.
     k_eTimeout = 4
     k_eInvalidItemDef = 5
     k_eItemDefNotLimited = 6
+
+
+class CMsgClientToGCGetInFlightItemChargesResponseEResponse(betterproto.Enum):
+    k_eInternalError = 0
+    k_eSuccess = 1
+    k_eTooBusy = 2
+    k_eDisabled = 3
+    k_eTimeout = 4
+    k_eInvalidItemDef = 5
+
+
+class CMsgClientToGCPurchaseChargeCostItemsResponseEResponse(betterproto.Enum):
+    k_eInternalError = 0
+    k_eSuccess = 1
+    k_eTooBusy = 2
+    k_eDisabled = 3
+    k_eTimeout = 4
+    k_eInvalidParam = 5
+    k_eInvalidPrice = 6
+    k_eInsufficientCharges = 7
+    k_eLimitedItem = 8
+    k_eMissingPrereq = 10
 
 
 @dataclass
@@ -464,7 +494,7 @@ class CMsgGCToGCGrantAccountRolledItemsItem(betterproto.Message):
         "CMsgGCToGCGrantAccountRolledItemsItemAdditionalAuditEntry"
     ] = betterproto.message_field(6)
     inventory_token: int = betterproto.uint32_field(7)
-    quality: int = betterproto.uint32_field(8)
+    quality: int = betterproto.int32_field(8)
 
 
 @dataclass
@@ -600,6 +630,12 @@ class CMsgClientToGCWrapAndDeliverGift(betterproto.Message):
     item_id: int = betterproto.uint64_field(1)
     give_to_account_id: int = betterproto.uint32_field(2)
     gift_message: str = betterproto.string_field(3)
+
+
+@dataclass
+class CMsgSQLGCToGCRevokeUntrustedGift(betterproto.Message):
+    account_id: int = betterproto.uint32_field(1)
+    sent_item_id: int = betterproto.uint64_field(4)
 
 
 @dataclass
@@ -1006,6 +1042,7 @@ class CMsgProcessTransactionOrderItem(betterproto.Message):
     parent_stack_index: int = betterproto.int32_field(7)
     default_price: bool = betterproto.bool_field(8)
     is_user_facing: bool = betterproto.bool_field(9)
+    price_index: int = betterproto.int32_field(11)
 
 
 @dataclass
@@ -1036,6 +1073,7 @@ class CMsgGCToGCBroadcastConsoleCommand(betterproto.Message):
     report_output: bool = betterproto.bool_field(2)
     sending_gc: int = betterproto.int32_field(3)
     output_initiator: str = betterproto.string_field(4)
+    sender_source: str = betterproto.string_field(5)
 
 
 @dataclass
@@ -1165,6 +1203,66 @@ class CMsgClientToGCGetLimitedItemPurchaseQuantityResponse(betterproto.Message):
         betterproto.enum_field(1)
     )
     quantity_purchased: int = betterproto.uint32_field(2)
+
+
+@dataclass
+class CMsgClientToGCGetInFlightItemCharges(betterproto.Message):
+    item_def: int = betterproto.uint32_field(1)
+
+
+@dataclass
+class CMsgClientToGCGetInFlightItemChargesResponse(betterproto.Message):
+    result: "CMsgClientToGCGetInFlightItemChargesResponseEResponse" = (
+        betterproto.enum_field(1)
+    )
+    charges_in_flight: int = betterproto.uint32_field(2)
+
+
+@dataclass
+class CMsgClientToGCPurchaseChargeCostItems(betterproto.Message):
+    items: List[
+        "CMsgClientToGCPurchaseChargeCostItemsItem"
+    ] = betterproto.message_field(1)
+    currency: int = betterproto.uint32_field(2)
+
+
+@dataclass
+class CMsgClientToGCPurchaseChargeCostItemsItem(betterproto.Message):
+    item_def_index: int = betterproto.uint32_field(1)
+    quantity: int = betterproto.uint32_field(2)
+    source_reference_id: int = betterproto.uint64_field(3)
+    price_index: int = betterproto.int32_field(4)
+
+
+@dataclass
+class CMsgClientToGCPurchaseChargeCostItemsResponse(betterproto.Message):
+    result: "CMsgClientToGCPurchaseChargeCostItemsResponseEResponse" = (
+        betterproto.enum_field(1)
+    )
+    item_ids: List[int] = betterproto.uint64_field(2)
+
+
+@dataclass
+class CMsgGCToClientInFlightChargesUpdated(betterproto.Message):
+    in_flight_charges: List[
+        "CMsgGCToClientInFlightChargesUpdatedItemCharges"
+    ] = betterproto.message_field(2)
+
+
+@dataclass
+class CMsgGCToClientInFlightChargesUpdatedItemCharges(betterproto.Message):
+    item_def: int = betterproto.uint32_field(1)
+    charges_in_flight: int = betterproto.uint32_field(2)
+
+
+@dataclass
+class CMsgClientToGCCancelUnfinalizedTransactions(betterproto.Message):
+    unused: int = betterproto.uint32_field(1)
+
+
+@dataclass
+class CMsgClientToGCCancelUnfinalizedTransactionsResponse(betterproto.Message):
+    result: int = betterproto.uint32_field(1)
 
 
 @dataclass

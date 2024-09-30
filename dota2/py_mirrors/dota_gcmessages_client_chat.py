@@ -116,7 +116,6 @@ class CMsgDOTAChatMessage(betterproto.Message):
     fantasy_draft_player_account_id: int = betterproto.uint32_field(9)
     event_id: int = betterproto.uint32_field(10)
     suggest_invite_to_lobby: bool = betterproto.bool_field(11)
-    event_points: int = betterproto.uint32_field(12)
     coin_flip: bool = betterproto.bool_field(13)
     player_id: int = betterproto.int32_field(14)
     share_profile_account_id: int = betterproto.uint32_field(15)
@@ -131,9 +130,9 @@ class CMsgDOTAChatMessage(betterproto.Message):
     legacy_battle_cup_victory: bool = betterproto.bool_field(24)
     battle_cup_streak: int = betterproto.uint32_field(29)
     badge_level: int = betterproto.uint32_field(25)
-    suggest_pick_hero_id: int = betterproto.uint32_field(26)
+    suggest_pick_hero_id: int = betterproto.int32_field(26)
     suggest_pick_hero_role: str = betterproto.string_field(27)
-    suggest_ban_hero_id: int = betterproto.uint32_field(30)
+    suggest_ban_hero_id: int = betterproto.int32_field(30)
     trivia_answer: "CMsgDOTAChatMessageTriviaAnswered" = betterproto.message_field(32)
     requested_ability_id: int = betterproto.int32_field(33)
     chat_flags: int = betterproto.uint32_field(34)
@@ -148,6 +147,8 @@ class CMsgDOTAChatMessage(betterproto.Message):
     chat_wheel_message: "CMsgDOTAChatMessageChatWheelMessage" = (
         betterproto.message_field(41)
     )
+    event_level: int = betterproto.uint32_field(42)
+    suggest_pick_hero_facet: int = betterproto.uint32_field(43)
 
 
 @dataclass

@@ -19,12 +19,14 @@ class CSubtickMoveStep(betterproto.Message):
     button: int = betterproto.uint64_field(1)
     pressed: bool = betterproto.bool_field(2)
     when: float = betterproto.float_field(3)
+    analog_forward_delta: float = betterproto.float_field(4)
+    analog_left_delta: float = betterproto.float_field(5)
 
 
 @dataclass
 class CBaseUserCmdPB(betterproto.Message):
-    command_number: int = betterproto.int32_field(1)
-    tick_count: int = betterproto.int32_field(2)
+    legacy_command_number: int = betterproto.int32_field(1)
+    client_tick: int = betterproto.int32_field(2)
     buttons_pb: "CInButtonStatePB" = betterproto.message_field(3)
     viewangles: "CMsgQAngle" = betterproto.message_field(4)
     forwardmove: float = betterproto.float_field(5)
@@ -35,7 +37,6 @@ class CBaseUserCmdPB(betterproto.Message):
     random_seed: int = betterproto.int32_field(10)
     mousedx: int = betterproto.int32_field(11)
     mousedy: int = betterproto.int32_field(12)
-    hasbeenpredicted: bool = betterproto.bool_field(13)
     pawn_entity_handle: int = betterproto.uint32_field(14)
     subtick_moves: List["CSubtickMoveStep"] = betterproto.message_field(18)
     move_crc: bytes = betterproto.bytes_field(19)

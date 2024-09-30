@@ -38,9 +38,19 @@ class CExtraMsgBlock(betterproto.Message):
 
 @dataclass
 class CMsgSteamLearnServerInfo(betterproto.Message):
-    enable_data_submission: bool = betterproto.bool_field(1)
-    enable_inferencing: bool = betterproto.bool_field(2)
-    hmac_keys: "CMsgSteamLearnHMACKeys" = betterproto.message_field(3)
+    access_tokens: "CMsgSteamLearnAccessTokens" = betterproto.message_field(4)
+    project_infos: List[
+        "CMsgSteamLearnServerInfoProjectInfo"
+    ] = betterproto.message_field(5)
+
+
+@dataclass
+class CMsgSteamLearnServerInfoProjectInfo(betterproto.Message):
+    project_id: int = betterproto.uint32_field(1)
+    snapshot_published_version: int = betterproto.uint32_field(2)
+    inference_published_version: int = betterproto.uint32_field(3)
+    snapshot_percentage: int = betterproto.uint32_field(6)
+    snapshot_enabled: bool = betterproto.bool_field(7)
 
 
 @dataclass
@@ -292,7 +302,6 @@ class CMsgClientWelcome(betterproto.Message):
         "CMsgSOCacheSubscriptionCheck"
     ] = betterproto.message_field(4)
     location: "CMsgClientWelcomeLocation" = betterproto.message_field(5)
-    save_game_key: bytes = betterproto.bytes_field(6)
     gc_socache_file_version: int = betterproto.uint32_field(9)
     txn_country_code: str = betterproto.string_field(10)
     game_data2: bytes = betterproto.bytes_field(11)

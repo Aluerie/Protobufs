@@ -18,10 +18,8 @@ class C2S_CONNECT_Message(betterproto.Message):
     splitplayers: List["CCLCMsg_SplitPlayerConnect"] = betterproto.message_field(7)
     auth_steam: bytes = betterproto.bytes_field(8)
     challenge_context: str = betterproto.string_field(9)
-    use_snp: int = betterproto.sint32_field(10)
 
 
 @dataclass
 class C2S_CONNECTION_Message(betterproto.Message):
     addon_name: str = betterproto.string_field(1)
-    use_snp: bool = betterproto.bool_field(2)

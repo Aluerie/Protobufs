@@ -344,6 +344,9 @@ class CMvpDataMvpDatumMvpAccoladeMvpAccoladeType(betterproto.Enum):
     kKillEaterEventType_Muerta_PierceTheVeilKills = 276
     kKillEaterEventType_Muerta_MultiHeroDeadShot = 277
     kKillEaterEventType_Muerta_DeadShotsIntoTheCalling = 278
+    kKillEaterEventType_Ringmaster_LongRangeDaggerHits = 279
+    kKillEaterEventType_Ringmaster_MultiHeroWhips = 280
+    kKillEaterEventType_Ringmaster_MultiHeroMesmerizes = 281
 
 
 @dataclass
@@ -362,6 +365,7 @@ class CSODOTAPartyMember(betterproto.Message):
     has_hp_resource: bool = betterproto.bool_field(15)
     joined_from_partyfinder: bool = betterproto.bool_field(12)
     is_steam_china: bool = betterproto.bool_field(16)
+    banned_hero_ids: List[int] = betterproto.int32_field(17)
 
 
 @dataclass
@@ -421,6 +425,8 @@ class CSODOTAParty(betterproto.Message):
     bot_script_index_mask: int = betterproto.uint32_field(73)
     restricted_from_ranked: bool = betterproto.bool_field(74)
     restricted_from_ranked_account_id: int = betterproto.uint32_field(75)
+    rank_spread_likert_scale: int = betterproto.uint32_field(76)
+    behavior_score_likert_scale: int = betterproto.uint32_field(77)
 
 
 @dataclass

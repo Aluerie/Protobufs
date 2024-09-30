@@ -118,7 +118,9 @@ class EEvent(betterproto.Enum):
     EVENT_ID_TEAM_2023_TOUR3 = 43
     EVENT_ID_INTERNATIONAL_2023 = 45
     EVENT_ID_10TH_ANNIVERSARY = 46
+    EVENT_ID_CROWNFALL = 47
     EVENT_ID_FROSTIVUS_2023 = 48
+    EVENT_ID_INTERNATIONAL_2024 = 49
 
 
 class ERankType(betterproto.Enum):
@@ -145,6 +147,7 @@ class DOTALeaverStatusT(betterproto.Enum):
     DOTA_LEAVER_NEVER_CONNECTED_TOO_LONG = 6
     DOTA_LEAVER_FAILED_TO_READY_UP = 7
     DOTA_LEAVER_DECLINED = 8
+    DOTA_LEAVER_DECLINED_REQUEUE = 9
 
 
 class DOTAConnectionStateT(betterproto.Enum):
@@ -320,6 +323,7 @@ class DOTALobbyReadyState(betterproto.Enum):
     DOTALobbyReadyState_UNDECLARED = 0
     DOTALobbyReadyState_ACCEPTED = 1
     DOTALobbyReadyState_DECLINED = 2
+    DOTALobbyReadyState_DECLINED_REQUEUE = 3
 
 
 class DOTAJoinLobbyResult(betterproto.Enum):
@@ -501,6 +505,10 @@ class EBadgeType(betterproto.Enum):
     k_EBadgeType_TI12_PlayoffsDay3 = 15
     k_EBadgeType_TI12_FinalsWeekend = 16
     k_EBadgeType_TI12_Special = 17
+    k_EBadgeType_TI13_FinalsDay1 = 18
+    k_EBadgeType_TI13_FinalsDay2 = 19
+    k_EBadgeType_TI13_FinalsDay3 = 20
+    k_EBadgeType_TI13_Special = 21
 
 
 class ELeagueStatus(betterproto.Enum):
@@ -698,6 +706,13 @@ class EOverwatchReportReason(betterproto.Enum):
     k_EOverwatchReportReason_Griefing = 3
     k_EOverwatchReportReason_Suspicious = 4
     k_EOverwatchReportReason_AbilityAbuse = 5
+
+
+class ECandyShopUpgrade(betterproto.Enum):
+    k_ECandyShopUpgradeInvalid = -1
+    k_ECandyShopUpgrade_InventorySize = 0
+    k_ECandyShopUpgrade_RewardShelf = 1
+    k_ECandyShopUpgrade_ExtraExchangeRecipe = 2
 
 
 @dataclass

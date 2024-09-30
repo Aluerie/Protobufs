@@ -26,7 +26,8 @@ class EDemoCommands(betterproto.Enum):
     DEM_SaveGame = 14
     DEM_SpawnGroups = 15
     DEM_AnimationData = 16
-    DEM_Max = 17
+    DEM_AnimationHeader = 17
+    DEM_Max = 18
     DEM_IsCompressed = 64
 
 
@@ -46,11 +47,13 @@ class CDemoFileHeader(betterproto.Message):
     demo_version_guid: str = betterproto.string_field(12)
     build_num: int = betterproto.int32_field(13)
     game: str = betterproto.string_field(14)
+    server_start_tick: int = betterproto.int32_field(15)
 
 
 @dataclass
 class CGameInfo(betterproto.Message):
     dota: "CGameInfoCDotaGameInfo" = betterproto.message_field(4)
+    cs: "CGameInfoCCSGameInfo" = betterproto.message_field(5)
 
 
 @dataclass
@@ -85,7 +88,12 @@ class CGameInfoCDotaGameInfoCPlayerInfo(betterproto.Message):
 class CGameInfoCDotaGameInfoCHeroSelectEvent(betterproto.Message):
     is_pick: bool = betterproto.bool_field(1)
     team: int = betterproto.uint32_field(2)
-    hero_id: int = betterproto.uint32_field(3)
+    hero_id: int = betterproto.int32_field(3)
+
+
+@dataclass
+class CGameInfoCCSGameInfo(betterproto.Message):
+    round_start_ticks: List[int] = betterproto.int32_field(1)
 
 
 @dataclass
@@ -151,6 +159,13 @@ class CDemoCustomData(betterproto.Message):
 @dataclass
 class CDemoCustomDataCallbacks(betterproto.Message):
     save_id: List[str] = betterproto.string_field(1)
+
+
+@dataclass
+class CDemoAnimationHeader(betterproto.Message):
+    entity_id: int = betterproto.sint32_field(1)
+    tick: int = betterproto.int32_field(2)
+    data: bytes = betterproto.bytes_field(3)
 
 
 @dataclass

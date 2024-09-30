@@ -15,8 +15,11 @@ class ECandyShopAuditAction(betterproto.Enum):
     k_ECandyShopAuditAction_RerollRewards = 4
     k_ECandyShopAuditAction_DoVariableExchange = 5
     k_ECandyShopAuditAction_DoExchange = 6
-    k_ECandyShopAuditAction_EventActionGrantInventorySizeIncrease = 7
+    k_ECandyShopAuditAction_DEPRECATED_EventActionGrantInventorySizeIncrease = 7
     k_ECandyShopAuditAction_EventActionGrantRerollChargesIncrease = 8
+    k_ECandyShopAuditAction_EventActionGrantUpgrade_InventorySize = 100
+    k_ECandyShopAuditAction_EventActionGrantUpgrade_RewardShelf = 101
+    k_ECandyShopAuditAction_EventActionGrantUpgrade_ExtraExchangeRecipe = 102
 
 
 class ECandyShopRewardType(betterproto.Enum):
@@ -96,9 +99,10 @@ class CMsgClientToGCCandyShopRerollRewardsResponseEResponse(betterproto.Enum):
     k_eInvalidShop = 5
     k_eNoRerollCharges = 6
     k_eExpiredShop = 7
+    k_eShopNotOpen = 8
 
 
-class CMsgClientToGCCandyShopDevGrantCandyResponseEResponse(betterproto.Enum):
+class CCandyShopDevEResponse(betterproto.Enum):
     k_eInternalError = 0
     k_eSuccess = 1
     k_eTooBusy = 2
@@ -107,46 +111,6 @@ class CMsgClientToGCCandyShopDevGrantCandyResponseEResponse(betterproto.Enum):
     k_eNotAllowed = 5
     k_eInvalidShop = 6
     k_eNotEnoughSpace = 7
-
-
-class CMsgClientToGCCandyShopDevClearInventoryResponseEResponse(betterproto.Enum):
-    k_eInternalError = 0
-    k_eSuccess = 1
-    k_eTooBusy = 2
-    k_eDisabled = 3
-    k_eTimeout = 4
-    k_eNotAllowed = 5
-    k_eInvalidShop = 6
-
-
-class CMsgClientToGCCandyShopDevGrantCandyBagsResponseEResponse(betterproto.Enum):
-    k_eInternalError = 0
-    k_eSuccess = 1
-    k_eTooBusy = 2
-    k_eDisabled = 3
-    k_eTimeout = 4
-    k_eNotAllowed = 5
-    k_eInvalidShop = 6
-
-
-class CMsgClientToGCCandyShopDevShuffleExchangeResponseEResponse(betterproto.Enum):
-    k_eInternalError = 0
-    k_eSuccess = 1
-    k_eTooBusy = 2
-    k_eDisabled = 3
-    k_eTimeout = 4
-    k_eNotAllowed = 5
-    k_eInvalidShop = 6
-
-
-class CMsgClientToGCCandyShopDevGrantRerollChargesResponseEResponse(betterproto.Enum):
-    k_eInternalError = 0
-    k_eSuccess = 1
-    k_eTooBusy = 2
-    k_eDisabled = 3
-    k_eTimeout = 4
-    k_eNotAllowed = 5
-    k_eInvalidShop = 6
 
 
 @dataclass
@@ -176,7 +140,6 @@ class CMsgCandyShopRewardData_Item(betterproto.Message):
 class CMsgCandyShopRewardData_EventAction(betterproto.Message):
     event_id: "EEvent" = betterproto.enum_field(1)
     action_id: int = betterproto.uint32_field(2)
-    quantity: int = betterproto.uint32_field(3)
 
 
 @dataclass
@@ -202,12 +165,15 @@ class CMsgCandyShopReward(betterproto.Message):
 
 @dataclass
 class CMsgCandyShopUserData(betterproto.Message):
-    inventory_size: int = betterproto.uint32_field(1)
+    inventory_max: int = betterproto.uint32_field(1)
     inventory: "CMsgCandyShopCandyQuantity" = betterproto.message_field(2)
-    exchange_reset_timestamp: float = betterproto.fixed32_field(3)
-    exchange_recipes: List["CMsgCandyShopExchangeRecipe"] = betterproto.message_field(4)
-    active_rewards: List["CMsgCandyShopReward"] = betterproto.message_field(5)
-    reroll_charges: int = betterproto.uint32_field(6)
+    exchange_recipe_max: int = betterproto.uint32_field(3)
+    exchange_reset_timestamp: float = betterproto.fixed32_field(4)
+    exchange_recipes: List["CMsgCandyShopExchangeRecipe"] = betterproto.message_field(5)
+    active_reward_max: int = betterproto.uint32_field(6)
+    active_rewards: List["CMsgCandyShopReward"] = betterproto.message_field(7)
+    reroll_charges_max: int = betterproto.uint32_field(8)
+    reroll_charges: int = betterproto.uint32_field(9)
 
 
 @dataclass
@@ -295,6 +261,11 @@ class CMsgClientToGCCandyShopRerollRewardsResponse(betterproto.Message):
 
 
 @dataclass
+class CCandyShopDev(betterproto.Message):
+    pass
+
+
+@dataclass
 class CMsgClientToGCCandyShopDevGrantCandy(betterproto.Message):
     candy_shop_id: int = betterproto.uint32_field(1)
     candy_quantity: "CMsgCandyShopCandyQuantity" = betterproto.message_field(2)
@@ -302,9 +273,7 @@ class CMsgClientToGCCandyShopDevGrantCandy(betterproto.Message):
 
 @dataclass
 class CMsgClientToGCCandyShopDevGrantCandyResponse(betterproto.Message):
-    response: "CMsgClientToGCCandyShopDevGrantCandyResponseEResponse" = (
-        betterproto.enum_field(1)
-    )
+    response: "CCandyShopDevEResponse" = betterproto.enum_field(1)
 
 
 @dataclass
@@ -314,9 +283,7 @@ class CMsgClientToGCCandyShopDevClearInventory(betterproto.Message):
 
 @dataclass
 class CMsgClientToGCCandyShopDevClearInventoryResponse(betterproto.Message):
-    response: "CMsgClientToGCCandyShopDevClearInventoryResponseEResponse" = (
-        betterproto.enum_field(1)
-    )
+    response: "CCandyShopDevEResponse" = betterproto.enum_field(1)
 
 
 @dataclass
@@ -327,9 +294,7 @@ class CMsgClientToGCCandyShopDevGrantCandyBags(betterproto.Message):
 
 @dataclass
 class CMsgClientToGCCandyShopDevGrantCandyBagsResponse(betterproto.Message):
-    response: "CMsgClientToGCCandyShopDevGrantCandyBagsResponseEResponse" = (
-        betterproto.enum_field(1)
-    )
+    response: "CCandyShopDevEResponse" = betterproto.enum_field(1)
 
 
 @dataclass
@@ -339,9 +304,7 @@ class CMsgClientToGCCandyShopDevShuffleExchange(betterproto.Message):
 
 @dataclass
 class CMsgClientToGCCandyShopDevShuffleExchangeResponse(betterproto.Message):
-    response: "CMsgClientToGCCandyShopDevShuffleExchangeResponseEResponse" = (
-        betterproto.enum_field(1)
-    )
+    response: "CCandyShopDevEResponse" = betterproto.enum_field(1)
 
 
 @dataclass
@@ -352,6 +315,14 @@ class CMsgClientToGCCandyShopDevGrantRerollCharges(betterproto.Message):
 
 @dataclass
 class CMsgClientToGCCandyShopDevGrantRerollChargesResponse(betterproto.Message):
-    response: "CMsgClientToGCCandyShopDevGrantRerollChargesResponseEResponse" = (
-        betterproto.enum_field(1)
-    )
+    response: "CCandyShopDevEResponse" = betterproto.enum_field(1)
+
+
+@dataclass
+class CMsgClientToGCCandyShopDevResetShop(betterproto.Message):
+    candy_shop_id: int = betterproto.uint32_field(1)
+
+
+@dataclass
+class CMsgClientToGCCandyShopDevResetShopResponse(betterproto.Message):
+    response: "CCandyShopDevEResponse" = betterproto.enum_field(1)

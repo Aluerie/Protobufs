@@ -20,7 +20,7 @@ class SignonStateT(betterproto.Enum):
 
 class NET_Messages(betterproto.Enum):
     net_NOP = 0
-    net_Disconnect = 1
+    net_Disconnect_Legacy = 1
     net_SplitScreenUser = 3
     net_Tick = 4
     net_StringCmd = 5
@@ -126,11 +126,6 @@ class CNETMsg_SplitScreenUser(betterproto.Message):
 
 
 @dataclass
-class CNETMsg_Disconnect(betterproto.Message):
-    reason: "ENetworkDisconnectionReason" = betterproto.enum_field(2)
-
-
-@dataclass
 class CNETMsg_Tick(betterproto.Message):
     tick: int = betterproto.uint32_field(1)
     host_frametime: int = betterproto.uint32_field(2)
@@ -141,6 +136,9 @@ class CNETMsg_Tick(betterproto.Message):
     host_loss: int = betterproto.uint32_field(7)
     host_unfiltered_frametime: int = betterproto.uint32_field(8)
     hltv_replay_flags: int = betterproto.uint32_field(9)
+    expected_long_tick: int = betterproto.uint32_field(10)
+    expected_long_tick_reason: str = betterproto.string_field(11)
+    jitter: int = betterproto.uint32_field(12)
 
 
 @dataclass

@@ -74,7 +74,6 @@ class EDotaUserMessages(betterproto.Enum):
     DOTA_UM_BoosterState = 528
     DOTA_UM_WillPurchaseAlert = 529
     DOTA_UM_TutorialMinimapPosition = 530
-    DOTA_UM_PlayerMMR = 531
     DOTA_UM_AbilitySteal = 532
     DOTA_UM_CourierKilledAlert = 533
     DOTA_UM_EnemyItemAlert = 534
@@ -164,6 +163,11 @@ class EDotaUserMessages(betterproto.Enum):
     DOTA_UM_MuertaReleaseEvent_AssignedTargetKilled = 619
     DOTA_UM_PlayerDraftSuggestPick = 620
     DOTA_UM_PlayerDraftPick = 621
+    DOTA_UM_UpdateLinearProjectileCPData = 622
+    DOTA_UM_GiftPlayer = 623
+    DOTA_UM_FacetPing = 624
+    DOTA_UM_InnatePing = 625
+    DOTA_UM_RoshanTimer = 626
 
 
 class DOTA_CHAT_MESSAGE(betterproto.Enum):
@@ -359,6 +363,7 @@ class DOTA_OVERHEAD_ALERT(betterproto.Enum):
     OVERHEAD_ALERT_ITEM_RECEIVED = 22
     OVERHEAD_ALERT_SHARD = 23
     OVERHEAD_ALERT_DEADLY_BLOW = 24
+    OVERHEAD_ALERT_FORCE_MISS = 25
 
 
 class DOTA_ROSHAN_PHASE(betterproto.Enum):
@@ -448,11 +453,6 @@ class EProjectionEvent(betterproto.Enum):
     ePE_Killstreak_godlike = 1
 
 
-class CDOTAUserMsg_PredictionResultPredictionEResult(betterproto.Enum):
-    k_eResult_ItemGranted = 1
-    k_eResult_Destroyed = 2
-
-
 class CDOTAResponseQuerySerializedFactValueType(betterproto.Enum):
     NUMERIC = 1
     STRING = 2
@@ -525,6 +525,13 @@ class CDOTAUserMsg_CombatLogBulkData(betterproto.Message):
 class CDOTAUserMsg_ProjectileParticleCPData(betterproto.Message):
     control_point: int = betterproto.int32_field(1)
     vector: "CMsgVector" = betterproto.message_field(2)
+
+
+@dataclass
+class CDOTAUserMsg_UpdateLinearProjectileCPData(betterproto.Message):
+    handle: int = betterproto.int32_field(1)
+    control_point: int = betterproto.int32_field(2)
+    vector: "CMsgVector" = betterproto.message_field(3)
 
 
 @dataclass
@@ -630,6 +637,12 @@ class CDOTAUserMsg_GlyphAlert(betterproto.Message):
 
 @dataclass
 class CDOTAUserMsg_RadarAlert(betterproto.Message):
+    player_id: int = betterproto.int32_field(1)
+    negative: bool = betterproto.bool_field(2)
+
+
+@dataclass
+class CDOTAUserMsg_RoshanTimer(betterproto.Message):
     player_id: int = betterproto.int32_field(1)
     negative: bool = betterproto.bool_field(2)
 
@@ -810,25 +823,6 @@ class CDOTAUserMsg_HalloweenDrops(betterproto.Message):
 
 
 @dataclass
-class CDOTAUserMsg_PredictionResult(betterproto.Message):
-    account_id: int = betterproto.uint32_field(1)
-    match_id: int = betterproto.uint64_field(2)
-    correct: bool = betterproto.bool_field(3)
-    predictions: List[
-        "CDOTAUserMsg_PredictionResultPrediction"
-    ] = betterproto.message_field(4)
-
-
-@dataclass
-class CDOTAUserMsg_PredictionResultPrediction(betterproto.Message):
-    item_def: int = betterproto.uint32_field(1)
-    num_correct: int = betterproto.uint32_field(2)
-    num_fails: int = betterproto.uint32_field(3)
-    result: "CDOTAUserMsg_PredictionResultPredictionEResult" = betterproto.enum_field(4)
-    granted_item_defs: List[int] = betterproto.uint32_field(6)
-
-
-@dataclass
 class CDOTAResponseQuerySerialized(betterproto.Message):
     facts: List["CDOTAResponseQuerySerializedFact"] = betterproto.message_field(1)
 
@@ -978,7 +972,7 @@ class CDOTAUserMsg_ChatWheel(betterproto.Message):
     chat_message_id: int = betterproto.uint32_field(1)
     player_id: int = betterproto.int32_field(2)
     account_id: int = betterproto.uint32_field(3)
-    param_hero_id: int = betterproto.uint32_field(4)
+    param_hero_id: int = betterproto.int32_field(4)
     emoticon_id: int = betterproto.uint32_field(5)
 
 
@@ -994,7 +988,7 @@ class CDOTAUserMsg_ShowSurvey(betterproto.Message):
     survey_id: int = betterproto.int32_field(1)
     match_id: int = betterproto.uint64_field(2)
     response_style: str = betterproto.string_field(3)
-    teammate_hero_id: int = betterproto.uint32_field(4)
+    teammate_hero_id: int = betterproto.int32_field(4)
     teammate_name: str = betterproto.string_field(5)
     teammate_account_id: int = betterproto.uint32_field(6)
 
@@ -1154,6 +1148,7 @@ class CDOTAUserMsg_AbilityPing(betterproto.Message):
     secondary_charges: int = betterproto.int32_field(10)
     ctrl_held: bool = betterproto.bool_field(12)
     reclaim_time: float = betterproto.float_field(13)
+    owner_entity: int = betterproto.int32_field(14)
 
 
 @dataclass
@@ -1215,11 +1210,6 @@ class CDOTAUserMsg_BoosterState(betterproto.Message):
     boosted_players: List[
         "CDOTAUserMsg_BoosterStatePlayer"
     ] = betterproto.message_field(1)
-
-
-@dataclass
-class CDOTAUserMsg_PlayerMMR(betterproto.Message):
-    mmr: List[int] = betterproto.sint32_field(1)
 
 
 @dataclass
@@ -1485,8 +1475,9 @@ class CDOTAUserMsg_QuestStatus(betterproto.Message):
 @dataclass
 class CDOTAUserMsg_SuggestHeroPick(betterproto.Message):
     player_id: int = betterproto.int32_field(1)
-    hero_id: int = betterproto.uint32_field(2)
+    hero_id: int = betterproto.int32_field(2)
     ban: bool = betterproto.bool_field(3)
+    facet_id: int = betterproto.uint32_field(4)
 
 
 @dataclass
@@ -1563,8 +1554,8 @@ class CDOTAUserMsg_AbilityDraftRequestAbility(betterproto.Message):
 @dataclass
 class CDOTAUserMsg_DamageReport(betterproto.Message):
     player_id: int = betterproto.int32_field(1)
-    target_hero_id: int = betterproto.uint32_field(2)
-    source_hero_id: int = betterproto.uint32_field(3)
+    target_hero_id: int = betterproto.int32_field(2)
+    source_hero_id: int = betterproto.int32_field(3)
     damage_amount: int = betterproto.int32_field(4)
     broadcast: bool = betterproto.bool_field(5)
 
@@ -1577,6 +1568,13 @@ class CDOTAUserMsg_SalutePlayer(betterproto.Message):
     event_id: int = betterproto.uint32_field(4)
     custom_tip_style: str = betterproto.string_field(5)
     num_recent_tips: int = betterproto.uint32_field(6)
+
+
+@dataclass
+class CDOTAUserMsg_GiftPlayer(betterproto.Message):
+    source_player_id: int = betterproto.int32_field(1)
+    target_player_id: int = betterproto.int32_field(2)
+    gift_item_def_index: int = betterproto.uint32_field(3)
 
 
 @dataclass
@@ -1739,7 +1737,7 @@ class CDOTAUserMsg_HotPotato_Exploded(betterproto.Message):
 class CDOTAUserMsg_WK_Arcana_Progress(betterproto.Message):
     ehandle: int = betterproto.uint32_field(1)
     arcana_level: int = betterproto.uint32_field(2)
-    hero_id: int = betterproto.uint32_field(3)
+    hero_id: int = betterproto.int32_field(3)
 
 
 @dataclass
@@ -1887,3 +1885,18 @@ class CDOTAUserMsg_PlayerDraftPick(betterproto.Message):
     player_id_captain: int = betterproto.int32_field(1)
     player_id_target: int = betterproto.int32_field(2)
     team: int = betterproto.int32_field(3)
+
+
+@dataclass
+class CDOTAUserMsg_FacetPing(betterproto.Message):
+    player_id: int = betterproto.int32_field(1)
+    facet_strhash: int = betterproto.uint32_field(2)
+    entity_id: int = betterproto.uint32_field(3)
+    all_chat: bool = betterproto.bool_field(4)
+
+
+@dataclass
+class CDOTAUserMsg_InnatePing(betterproto.Message):
+    player_id: int = betterproto.int32_field(1)
+    entity_id: int = betterproto.uint32_field(2)
+    all_chat: bool = betterproto.bool_field(3)

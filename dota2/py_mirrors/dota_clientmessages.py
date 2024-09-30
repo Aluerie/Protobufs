@@ -108,6 +108,14 @@ class EDotaClientMessages(betterproto.Enum):
     DOTA_CM_ChatWheelAlert = 804
     DOTA_CM_AbilityAlert = 805
     DOTA_CM_AllyAbilityAlert = 806
+    DOTA_CM_GiftPlayer = 807
+    DOTA_CM_GiftEveryone = 808
+    DOTA_CM_SelectOverworldTokenRewards = 809
+    DOTA_CM_FacetAlert = 810
+    DOTA_CM_InnateAlert = 811
+    DOTA_CM_SelectOverworldID = 812
+    DOTA_CM_RerollNeutralItem = 813
+    DOTA_CM_RoshanTimer = 814
 
 
 class CDOTAClientMsg_UnitsAutoAttackModeEMode(betterproto.Enum):
@@ -139,6 +147,8 @@ class CDOTAClientMsg_EnemyItemAlert(betterproto.Message):
     item_level: int = betterproto.int32_field(3)
     primary_charges: int = betterproto.int32_field(4)
     secondary_charges: int = betterproto.int32_field(5)
+    ability_id: int = betterproto.int32_field(6)
+    owner_entindex: int = betterproto.int32_field(7)
 
 
 @dataclass
@@ -252,7 +262,7 @@ class CDOTAClientMsg_RequestGraphUpdate(betterproto.Message):
 @dataclass
 class CDOTAClientMsg_ChatWheel(betterproto.Message):
     chat_message_id: int = betterproto.uint32_field(1)
-    param_hero_id: int = betterproto.uint32_field(2)
+    param_hero_id: int = betterproto.int32_field(2)
     emoticon_id: int = betterproto.uint32_field(3)
 
 
@@ -351,6 +361,8 @@ class CDOTAClientMsg_DemoHero(betterproto.Message):
     item_ids: List[int] = betterproto.uint64_field(4)
     style_index: int = betterproto.uint32_field(5)
     keep_existing_demohero: bool = betterproto.bool_field(6)
+    item_data: List["CSOEconItem"] = betterproto.message_field(7)
+    hero_variant: int = betterproto.int32_field(8)
 
 
 @dataclass
@@ -365,7 +377,7 @@ class CDOTAClientMsg_ChallengeReroll(betterproto.Message):
     event_id: "EEvent" = betterproto.enum_field(1)
     slot_id: int = betterproto.uint32_field(2)
     sequence_id: int = betterproto.uint32_field(3)
-    hero_id: int = betterproto.uint32_field(4)
+    hero_id: int = betterproto.int32_field(4)
 
 
 @dataclass
@@ -518,8 +530,8 @@ class CDOTAClientMsg_GuideSelected(betterproto.Message):
 
 @dataclass
 class CDOTAClientMsg_DamageReport(betterproto.Message):
-    target_hero_id: int = betterproto.uint32_field(1)
-    source_hero_id: int = betterproto.uint32_field(2)
+    target_hero_id: int = betterproto.int32_field(1)
+    source_hero_id: int = betterproto.int32_field(2)
     damage_amount: int = betterproto.int32_field(3)
     broadcast: bool = betterproto.bool_field(4)
 
@@ -528,6 +540,17 @@ class CDOTAClientMsg_DamageReport(betterproto.Message):
 class CDOTAClientMsg_SalutePlayer(betterproto.Message):
     target_player_id: int = betterproto.int32_field(1)
     event_id: int = betterproto.int32_field(2)
+
+
+@dataclass
+class CDOTAClientMsg_GiftPlayer(betterproto.Message):
+    target_player_id: int = betterproto.int32_field(1)
+    item_def_index: int = betterproto.uint32_field(2)
+
+
+@dataclass
+class CDOTAClientMsg_GiftEveryone(betterproto.Message):
+    item_def_index: int = betterproto.uint32_field(1)
 
 
 @dataclass
@@ -649,6 +672,12 @@ class CDOTAClientMsg_ChooseNeutralItem(betterproto.Message):
 
 
 @dataclass
+class CDOTAClientMsg_RerollNeutralItem(betterproto.Message):
+    target_entindex: int = betterproto.int32_field(1)
+    slot_index: int = betterproto.int32_field(2)
+
+
+@dataclass
 class CDOTAClientMsg_PlayerDraftPick(betterproto.Message):
     player_id: int = betterproto.int32_field(1)
 
@@ -673,3 +702,36 @@ class CDOTAClientMsg_PlayerDraftPreferTeam(betterproto.Message):
 class CDOTAClientMsg_AbilityAlert(betterproto.Message):
     ability_entindex: int = betterproto.uint32_field(1)
     ctrl_held: bool = betterproto.bool_field(2)
+    owner_entindex: int = betterproto.int32_field(3)
+    ability_id: int = betterproto.int32_field(4)
+    primary_charges: int = betterproto.uint32_field(5)
+    secondary_charges: int = betterproto.uint32_field(6)
+    reclaim_time: float = betterproto.float_field(7)
+
+
+@dataclass
+class CDOTAClientMsg_SelectOverworldTokenRewards(betterproto.Message):
+    token_ids: List[int] = betterproto.uint32_field(1)
+
+
+@dataclass
+class CDOTAClientMsg_FacetAlert(betterproto.Message):
+    facet_strhash: int = betterproto.uint32_field(1)
+    hero_entindex: int = betterproto.uint32_field(2)
+    ctrl_held: bool = betterproto.bool_field(3)
+
+
+@dataclass
+class CDOTAClientMsg_InnateAlert(betterproto.Message):
+    ability_entindex: int = betterproto.uint32_field(1)
+    ctrl_held: bool = betterproto.bool_field(2)
+
+
+@dataclass
+class CDOTAClientMsg_SelectOverworldID(betterproto.Message):
+    overworld_id: int = betterproto.uint32_field(1)
+
+
+@dataclass
+class CDOTAClientMsg_RoshanTimer(betterproto.Message):
+    negative: bool = betterproto.bool_field(1)

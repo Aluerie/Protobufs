@@ -31,6 +31,24 @@ class ETeamFanContentAssetStatus(betterproto.Enum):
     k_eFanContentAssetStatus_Rejected = 2
 
 
+class ETalentContentStatus(betterproto.Enum):
+    TALENT_CONTENT_STATUS_INVALID = 0
+    TALENT_CONTENT_STATUS_PENDING = 1
+    TALENT_CONTENT_STATUS_EVALUATED = 2
+
+
+class ETalentContentAssetType(betterproto.Enum):
+    k_eTalentContentAssetType_Photo = 1
+    k_eTalentContentAssetType_Autograph = 2
+    k_eTalentContentAssetType_Voicelines = 3
+
+
+class ETalentContentAssetStatus(betterproto.Enum):
+    k_eTalentContentAssetStatus_None = 0
+    k_eTalentContentAssetStatus_Approved = 1
+    k_eTalentContentAssetStatus_Rejected = 2
+
+
 class CMsgArcanaVotesVotingState(betterproto.Enum):
     FINISHED = 0
     IN_PROGRESS = 1
@@ -59,6 +77,11 @@ class CMsgTeamFanContentAssetStatusResponseEResult(betterproto.Enum):
     k_eInternalError = 1
 
 
+class CMsgSetTalentContentResponseEResult(betterproto.Enum):
+    k_eSuccess = 0
+    k_eInternalError = 1
+
+
 class CMsgDPCEventELeagueEvent(betterproto.Enum):
     EVENT_INVALID = 0
     SPRING_2021_LEAGUE = 1
@@ -82,6 +105,7 @@ class CMsgDPCEventELeagueEvent(betterproto.Enum):
     SUMMER_2023_LEAGUE = 19
     SUMMER_2023_MAJOR = 20
     INTERNATIONAL_2023 = 21
+    INTERNATIONAL_2024 = 23
 
 
 class CMsgDPCEventELeagueEventPhase(betterproto.Enum):
@@ -106,6 +130,7 @@ class CMsgDPCEventELeagueEventType(betterproto.Enum):
     INTERNATIONAL_QUALIFIERS = 3
     INTERNATIONAL = 4
     LEAGUE_FINALS = 5
+    EXTERNAL = 6
 
 
 class CMsgDPCEventETour(betterproto.Enum):
@@ -130,8 +155,8 @@ class CMsgArcanaVotes(betterproto.Message):
 @dataclass
 class CMsgArcanaVotesMatch(betterproto.Message):
     match_id: int = betterproto.uint32_field(1)
-    hero_id_0: int = betterproto.uint32_field(2)
-    hero_id_1: int = betterproto.uint32_field(3)
+    hero_id_0: int = betterproto.int32_field(2)
+    hero_id_1: int = betterproto.int32_field(3)
     hero_seeding_0: int = betterproto.uint32_field(4)
     hero_seeding_1: int = betterproto.uint32_field(5)
     vote_count_0: int = betterproto.uint32_field(6)
@@ -185,7 +210,7 @@ class CMsgDraftTrivia(betterproto.Message):
 
 @dataclass
 class CMsgDraftTriviaDraftTriviaHeroInfo(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     role: int = betterproto.uint32_field(2)
 
 
@@ -276,6 +301,37 @@ class CMsgTeamFanContentAutographStatusTeamStatus(betterproto.Message):
         "CMsgTeamFanContentAutographStatusAutographStatus"
     ] = betterproto.message_field(3)
     workshop_account_id: int = betterproto.uint32_field(4)
+
+
+@dataclass
+class CMsgTalentContentAssetStatus(betterproto.Message):
+    asset_type: "ETalentContentAssetType" = betterproto.enum_field(1)
+    asset_index: int = betterproto.uint32_field(2)
+    asset_status: "ETalentContentAssetStatus" = betterproto.enum_field(3)
+
+
+@dataclass
+class CMsgTalentContentStatus(betterproto.Message):
+    talent_status: List[
+        "CMsgTalentContentStatusTalentDetails"
+    ] = betterproto.message_field(1)
+
+
+@dataclass
+class CMsgTalentContentStatusTalentDetails(betterproto.Message):
+    account_id: int = betterproto.uint32_field(1)
+    full_name: str = betterproto.string_field(2)
+    nickname: str = betterproto.string_field(3)
+    workshop_item_id: int = betterproto.uint32_field(4)
+    zip_file: str = betterproto.string_field(5)
+    status: "ETalentContentStatus" = betterproto.enum_field(6)
+    asset_status: List["CMsgTalentContentAssetStatus"] = betterproto.message_field(7)
+    broadcast_language: int = betterproto.uint32_field(8)
+
+
+@dataclass
+class CMsgSetTalentContentResponse(betterproto.Message):
+    result: "CMsgSetTalentContentResponseEResult" = betterproto.enum_field(1)
 
 
 @dataclass

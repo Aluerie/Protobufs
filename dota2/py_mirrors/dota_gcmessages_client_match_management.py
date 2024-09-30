@@ -109,6 +109,9 @@ class CMsgReadyUpStatus(betterproto.Message):
     lobby_id: float = betterproto.fixed64_field(1)
     accepted_ids: List[int] = betterproto.uint32_field(2)
     declined_ids: List[int] = betterproto.uint32_field(3)
+    accepted_indices: List[int] = betterproto.uint32_field(4)
+    declined_indices: List[int] = betterproto.uint32_field(5)
+    local_ready_state: "DOTALobbyReadyState" = betterproto.enum_field(6)
 
 
 @dataclass
@@ -133,13 +136,11 @@ class CMsgPracticeLobbySetDetails(betterproto.Message):
     bot_difficulty_radiant: "DOTABotDifficulty" = betterproto.enum_field(9)
     allow_cheats: bool = betterproto.bool_field(10)
     fill_with_bots: bool = betterproto.bool_field(11)
-    intro_mode: bool = betterproto.bool_field(12)
     allow_spectating: bool = betterproto.bool_field(13)
     pass_key: str = betterproto.string_field(15)
     leagueid: int = betterproto.uint32_field(16)
     penalty_level_radiant: int = betterproto.uint32_field(17)
     penalty_level_dire: int = betterproto.uint32_field(18)
-    load_game_id: int = betterproto.uint32_field(19)
     series_type: int = betterproto.uint32_field(20)
     radiant_series_wins: int = betterproto.uint32_field(21)
     dire_series_wins: int = betterproto.uint32_field(22)
@@ -164,7 +165,7 @@ class CMsgPracticeLobbySetDetails(betterproto.Message):
     custom_game_penalties: bool = betterproto.bool_field(47)
     lan_host_ping_location: str = betterproto.string_field(48)
     league_node_id: int = betterproto.uint32_field(49)
-    requested_hero_ids: List[int] = betterproto.uint32_field(50)
+    requested_hero_ids: List[int] = betterproto.int32_field(50)
     scenario_save: "CMsgLobbyScenarioSave" = betterproto.message_field(51)
     ability_draft_specific_details: "CMsgPracticeLobbySetDetailsAbilityDraftSpecificDetails" = betterproto.message_field(
         52
@@ -183,15 +184,6 @@ class CMsgPracticeLobbyCreate(betterproto.Message):
     pass_key: str = betterproto.string_field(5)
     client_version: int = betterproto.uint32_field(6)
     lobby_details: "CMsgPracticeLobbySetDetails" = betterproto.message_field(7)
-    save_game: "CMsgPracticeLobbyCreateSaveGame" = betterproto.message_field(8)
-
-
-@dataclass
-class CMsgPracticeLobbyCreateSaveGame(betterproto.Message):
-    data: bytes = betterproto.bytes_field(1)
-    version: int = betterproto.int32_field(2)
-    steam_id: float = betterproto.fixed64_field(3)
-    signature: float = betterproto.fixed64_field(4)
 
 
 @dataclass

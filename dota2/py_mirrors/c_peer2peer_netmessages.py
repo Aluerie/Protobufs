@@ -13,6 +13,8 @@ class P2P_Messages(betterproto.Enum):
     p2p_Ping = 258
     p2p_VRAvatarPosition = 259
     p2p_WatchSynchronization = 260
+    p2p_FightingGame_GameData = 261
+    p2p_FightingGame_Connection = 262
 
 
 class CP2P_VoiceHandler_Flags(betterproto.Enum):

@@ -86,6 +86,7 @@ class CGCStorePurchaseInit_LineItem(betterproto.Message):
     cost_in_local_currency: int = betterproto.uint32_field(3)
     purchase_type: int = betterproto.uint32_field(4)
     source_reference_id: int = betterproto.uint64_field(5)
+    price_index: int = betterproto.int32_field(6)
 
 
 @dataclass

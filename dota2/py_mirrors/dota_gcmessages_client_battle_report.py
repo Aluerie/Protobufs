@@ -194,7 +194,7 @@ class CMsgClientToGCGetBattleReport(betterproto.Message):
 
 @dataclass
 class CMsgBattleReport_Game(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     kills: int = betterproto.uint32_field(2)
     deaths: int = betterproto.uint32_field(3)
     assists: int = betterproto.uint32_field(4)
@@ -243,6 +243,7 @@ class CMsgBattleReport_Game(betterproto.Message):
     item3: int = betterproto.int32_field(48)
     item4: int = betterproto.int32_field(49)
     item5: int = betterproto.int32_field(50)
+    selected_facet: int = betterproto.uint32_field(51)
 
 
 @dataclass
@@ -272,7 +273,7 @@ class CMsgBattleReportHighlight(betterproto.Message):
     rarity: "CMsgBattleReport_HighlightRarity" = betterproto.enum_field(4)
     score: float = betterproto.float_field(5)
     confidence: float = betterproto.float_field(6)
-    hero_id: int = betterproto.uint32_field(7)
+    hero_id: int = betterproto.int32_field(7)
     role: "CMsgBattleReport_Role" = betterproto.enum_field(8)
     comparison_delta_value: float = betterproto.float_field(9)
     context: "CMsgBattleReport_CompareContext" = betterproto.enum_field(10)
@@ -283,7 +284,7 @@ class CMsgBattleReportInfo(betterproto.Message):
     timestamp: int = betterproto.uint32_field(1)
     duration: int = betterproto.uint32_field(2)
     acknowledged: bool = betterproto.bool_field(3)
-    featured_hero_id: int = betterproto.uint32_field(4)
+    featured_hero_id: int = betterproto.int32_field(4)
     featured_position: int = betterproto.uint32_field(5)
     games_played: int = betterproto.uint32_field(6)
     medal_counts: List[int] = betterproto.uint32_field(7)
@@ -314,7 +315,7 @@ class CMsgBattleReportAggregateStatsCMsgBattleReportStat(betterproto.Message):
 
 @dataclass
 class CMsgBattleReportAggregateStatsCMsgBattleReportAggregate(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     predicted_position: int = betterproto.uint32_field(2)
     game_count: int = betterproto.uint32_field(3)
     win_count: int = betterproto.uint32_field(4)
@@ -428,7 +429,7 @@ class CMsgClientToGCGetBattleReportAggregateStats(betterproto.Message):
 class CMsgClientToGCGetBattleReportAggregateStatsCMsgBattleReportAggregateKey(
     betterproto.Message
 ):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     predicted_position: int = betterproto.uint32_field(2)
 
 

@@ -88,7 +88,7 @@ class CDOTAMatchMetadataTeamAutoStyleCriteria(betterproto.Message):
 class CDOTAMatchMetadataTeamStrangeGemProgress(betterproto.Message):
     kill_eater_type: int = betterproto.uint32_field(1)
     gem_item_def_index: int = betterproto.uint32_field(2)
-    required_hero_id: int = betterproto.uint32_field(3)
+    required_hero_id: int = betterproto.int32_field(3)
     starting_value: int = betterproto.uint32_field(4)
     ending_value: int = betterproto.uint32_field(5)
     owner_item_def_index: int = betterproto.uint32_field(6)
@@ -122,7 +122,6 @@ class CDOTAMatchMetadataTeamActionGrant(betterproto.Message):
     action_id: int = betterproto.uint32_field(1)
     quantity: int = betterproto.uint32_field(2)
     audit: int = betterproto.uint32_field(3)
-    requires_win: bool = betterproto.bool_field(4)
     audit_data: int = betterproto.uint64_field(5)
 
 
@@ -255,6 +254,9 @@ class CDOTAMatchMetadataTeamPlayer(betterproto.Message):
     )
     game_player_id: int = betterproto.int32_field(57)
     player_tracked_stats: List["CMsgTrackedStat"] = betterproto.message_field(58)
+    overworld_rewards: "CDOTAMatchMetadataTeamPlayerOverworldRewards" = (
+        betterproto.message_field(59)
+    )
 
 
 @dataclass
@@ -266,6 +268,12 @@ class CDOTAMatchMetadataTeamPlayerContractProgress(betterproto.Message):
     contract_stars: int = betterproto.uint32_field(5)
     contract_slot: int = betterproto.uint32_field(6)
     completed: bool = betterproto.bool_field(7)
+
+
+@dataclass
+class CDOTAMatchMetadataTeamPlayerOverworldRewards(betterproto.Message):
+    overworld_id: int = betterproto.uint32_field(1)
+    tokens: "CMsgOverworldTokenQuantity" = betterproto.message_field(2)
 
 
 @dataclass
@@ -372,7 +380,7 @@ class CDOTAMatchPrivateMetadataTeamPlayerCombatSegmentDamageByAbility(
 class CDOTAMatchPrivateMetadataTeamPlayerCombatSegmentDamageByAbilityByHeroTarget(
     betterproto.Message
 ):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     damage: int = betterproto.uint32_field(2)
 
 
@@ -391,7 +399,7 @@ class CDOTAMatchPrivateMetadataTeamPlayerCombatSegmentHealingByAbility(
 class CDOTAMatchPrivateMetadataTeamPlayerCombatSegmentHealingByAbilityByHeroTarget(
     betterproto.Message
 ):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     healing: int = betterproto.uint32_field(2)
 
 
@@ -406,7 +414,7 @@ class CDOTAMatchPrivateMetadataTeamPlayerBuffRecord(betterproto.Message):
 
 @dataclass
 class CDOTAMatchPrivateMetadataTeamPlayerBuffRecordByHeroTarget(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     elapsed_duration: float = betterproto.float_field(2)
     is_hidden: bool = betterproto.bool_field(3)
 
@@ -431,6 +439,7 @@ class CDOTAMatchPrivateMetadataTeamPlayerXPReceived(betterproto.Message):
     tome_of_knowledge: int = betterproto.uint32_field(4)
     outpost: int = betterproto.uint32_field(5)
     other: int = betterproto.uint32_field(6)
+    abilities: int = betterproto.uint32_field(7)
 
 
 @dataclass

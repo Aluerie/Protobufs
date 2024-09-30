@@ -7,12 +7,6 @@ from typing import List
 import betterproto
 
 
-class EMobilePaymentProvider(betterproto.Enum):
-    k_EMobilePaymentProvider_Invalid = 0
-    k_EMobilePaymentProvider_GooglePlay = 1
-    k_EMobilePaymentProvider_AppleAppStore = 2
-
-
 class CMsgGCRoutingInfoRoutingMethod(betterproto.Enum):
     RANDOM = 0
     DISCARD = 1
@@ -32,18 +26,6 @@ class CMsgGCMsgSetOptionsOption(betterproto.Enum):
 class CMsgGCMsgSetOptionsGCSQLVersion(betterproto.Enum):
     GCSQL_VERSION_BASELINE = 1
     GCSQL_VERSION_BOOLTYPE = 2
-
-
-class CMsgDPPartnerMicroTxnsResponseEErrorCode(betterproto.Enum):
-    k_MsgValid = 0
-    k_MsgInvalidAppID = 1
-    k_MsgInvalidPartnerInfo = 2
-    k_MsgNoTransactions = 3
-    k_MsgSQLFailure = 4
-    k_MsgPartnerInfoDiscrepancy = 5
-    k_MsgTransactionInsertFailed = 7
-    k_MsgAlreadyRunning = 8
-    k_MsgInvalidTransactionData = 9
 
 
 @dataclass
@@ -141,37 +123,6 @@ class CMsgPackageLicense(betterproto.Message):
 class CMsgAMGetLicensesResponse(betterproto.Message):
     license: List["CMsgPackageLicense"] = betterproto.message_field(1)
     result: int = betterproto.uint32_field(2)
-
-
-@dataclass
-class CMsgAMGetUserGameStats(betterproto.Message):
-    steam_id: float = betterproto.fixed64_field(1)
-    game_id: float = betterproto.fixed64_field(2)
-    stats: List[int] = betterproto.uint32_field(3)
-
-
-@dataclass
-class CMsgAMGetUserGameStatsResponse(betterproto.Message):
-    steam_id: float = betterproto.fixed64_field(1)
-    game_id: float = betterproto.fixed64_field(2)
-    eresult: int = betterproto.int32_field(3)
-    stats: List["CMsgAMGetUserGameStatsResponseStats"] = betterproto.message_field(4)
-    achievement_blocks: List[
-        "CMsgAMGetUserGameStatsResponseAchievement_Blocks"
-    ] = betterproto.message_field(5)
-
-
-@dataclass
-class CMsgAMGetUserGameStatsResponseStats(betterproto.Message):
-    stat_id: int = betterproto.uint32_field(1)
-    stat_value: int = betterproto.uint32_field(2)
-
-
-@dataclass
-class CMsgAMGetUserGameStatsResponseAchievement_Blocks(betterproto.Message):
-    achievement_id: int = betterproto.uint32_field(1)
-    achievement_bit_id: int = betterproto.uint32_field(2)
-    unlock_time: float = betterproto.fixed32_field(3)
 
 
 @dataclass
@@ -295,34 +246,6 @@ class CGCMsgGetIPASNResponse(betterproto.Message):
 
 
 @dataclass
-class CGCMsgSystemStatsSchema(betterproto.Message):
-    gc_app_id: int = betterproto.uint32_field(1)
-    schema_kv: bytes = betterproto.bytes_field(2)
-
-
-@dataclass
-class CGCMsgGetSystemStats(betterproto.Message):
-    pass
-
-
-@dataclass
-class CGCMsgGetSystemStatsResponse(betterproto.Message):
-    gc_app_id: int = betterproto.uint32_field(1)
-    stats_kv: bytes = betterproto.bytes_field(2)
-    active_jobs: int = betterproto.uint32_field(3)
-    yielding_jobs: int = betterproto.uint32_field(4)
-    user_sessions: int = betterproto.uint32_field(5)
-    game_server_sessions: int = betterproto.uint32_field(6)
-    socaches: int = betterproto.uint32_field(7)
-    socaches_to_unload: int = betterproto.uint32_field(8)
-    socaches_loading: int = betterproto.uint32_field(9)
-    writeback_queue: int = betterproto.uint32_field(10)
-    steamid_locks: int = betterproto.uint32_field(11)
-    logon_queue: int = betterproto.uint32_field(12)
-    logon_jobs: int = betterproto.uint32_field(13)
-
-
-@dataclass
 class CMsgAMSendEmail(betterproto.Message):
     steamid: float = betterproto.fixed64_field(1)
     email_msg_type: int = betterproto.uint32_field(2)
@@ -416,6 +339,7 @@ class CMsgGCCheckFriendship_Response(betterproto.Message):
 class CMsgGCGetAppFriendsList(betterproto.Message):
     steamid: float = betterproto.fixed64_field(1)
     include_friendship_timestamps: bool = betterproto.bool_field(2)
+    include_friends_with_no_play_time: bool = betterproto.bool_field(3)
 
 
 @dataclass
@@ -472,20 +396,6 @@ class CMsgGCHAccountVacStatusChange(betterproto.Message):
     rtime_vacban_starts: int = betterproto.uint32_field(3)
     is_banned_now: bool = betterproto.bool_field(4)
     is_banned_future: bool = betterproto.bool_field(5)
-
-
-@dataclass
-class CMsgGCGetPartnerAccountLink(betterproto.Message):
-    steamid: float = betterproto.fixed64_field(1)
-
-
-@dataclass
-class CMsgGCGetPartnerAccountLink_Response(betterproto.Message):
-    pwid: int = betterproto.uint32_field(1)
-    nexonid: int = betterproto.uint32_field(2)
-    ageclass: int = betterproto.int32_field(3)
-    id_verified: bool = betterproto.bool_field(4)
-    is_adult: bool = betterproto.bool_field(5)
 
 
 @dataclass
@@ -582,62 +492,10 @@ class CMsgNotificationOfSuspiciousActivityMultipleGameInstances(betterproto.Mess
 
 
 @dataclass
-class CMsgDPPartnerMicroTxns(betterproto.Message):
-    appid: int = betterproto.uint32_field(1)
-    gc_name: str = betterproto.string_field(2)
-    partner: "CMsgDPPartnerMicroTxnsPartnerInfo" = betterproto.message_field(3)
-    transactions: List[
-        "CMsgDPPartnerMicroTxnsPartnerMicroTxn"
-    ] = betterproto.message_field(4)
-
-
-@dataclass
-class CMsgDPPartnerMicroTxnsPartnerMicroTxn(betterproto.Message):
-    init_time: int = betterproto.uint32_field(1)
-    last_update_time: int = betterproto.uint32_field(2)
-    txn_id: int = betterproto.uint64_field(3)
-    account_id: int = betterproto.uint32_field(4)
-    line_item: int = betterproto.uint32_field(5)
-    item_id: int = betterproto.uint64_field(6)
-    def_index: int = betterproto.uint32_field(7)
-    price: int = betterproto.uint64_field(8)
-    tax: int = betterproto.uint64_field(9)
-    price_usd: int = betterproto.uint64_field(10)
-    tax_usd: int = betterproto.uint64_field(11)
-    purchase_type: int = betterproto.uint32_field(12)
-    steam_txn_type: int = betterproto.uint32_field(13)
-    country_code: str = betterproto.string_field(14)
-    region_code: str = betterproto.string_field(15)
-    quantity: int = betterproto.int32_field(16)
-    ref_trans_id: int = betterproto.uint64_field(17)
-
-
-@dataclass
-class CMsgDPPartnerMicroTxnsPartnerInfo(betterproto.Message):
-    partner_id: int = betterproto.uint32_field(1)
-    partner_name: str = betterproto.string_field(2)
-    currency_code: str = betterproto.string_field(3)
-    currency_name: str = betterproto.string_field(4)
-
-
-@dataclass
-class CMsgDPPartnerMicroTxnsResponse(betterproto.Message):
-    eresult: int = betterproto.uint32_field(1)
-    eerrorcode: "CMsgDPPartnerMicroTxnsResponseEErrorCode" = betterproto.enum_field(2)
-
-
-@dataclass
 class CMsgGCHVacVerificationChange(betterproto.Message):
     steamid: float = betterproto.fixed64_field(1)
     appid: int = betterproto.uint32_field(2)
     is_verified: bool = betterproto.bool_field(3)
-
-
-@dataclass
-class CMsgGCHAccountTwoFactorChange(betterproto.Message):
-    steamid: float = betterproto.fixed64_field(1)
-    appid: int = betterproto.uint32_field(2)
-    twofactor_enabled: bool = betterproto.bool_field(3)
 
 
 @dataclass
@@ -693,29 +551,6 @@ class CMsgGCHAppCheersGetAllowedTypesResponseCheerRemaps(betterproto.Message):
     original_cheer_type: int = betterproto.uint32_field(1)
     remapped_cheer_type: int = betterproto.uint32_field(2)
     account_ids: List[int] = betterproto.uint32_field(3)
-
-
-@dataclass
-class CGCSystemMsg_ReportExternalPurchase_Request(betterproto.Message):
-    appid: int = betterproto.uint32_field(1)
-    steamid: float = betterproto.fixed64_field(2)
-    provider: "EMobilePaymentProvider" = betterproto.enum_field(3)
-    orderid: int = betterproto.uint64_field(4)
-    provider_orderid: str = betterproto.string_field(5)
-    amount: int = betterproto.int64_field(6)
-    currency: str = betterproto.string_field(7)
-    quantity: int = betterproto.uint32_field(8)
-    itemid: int = betterproto.uint32_field(9)
-    item_description: str = betterproto.string_field(10)
-    language: str = betterproto.string_field(11)
-    category: str = betterproto.string_field(12)
-    time_created: int = betterproto.uint32_field(13)
-
-
-@dataclass
-class CGCSystemMsg_ReportExternalPurchase_Response(betterproto.Message):
-    transid: float = betterproto.fixed64_field(1)
-    orderid: int = betterproto.uint64_field(2)
 
 
 @dataclass

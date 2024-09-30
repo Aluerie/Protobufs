@@ -114,7 +114,7 @@ class CMsgDOTATeamInfo(betterproto.Message):
 
 @dataclass
 class CMsgDOTATeamInfoHeroStats(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     picks: int = betterproto.uint32_field(2)
     wins: int = betterproto.uint32_field(3)
     bans: int = betterproto.uint32_field(4)

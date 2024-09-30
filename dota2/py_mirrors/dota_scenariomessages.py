@@ -195,6 +195,7 @@ class CMsgDotaScenarioHero(betterproto.Message):
         151
     )
     abilities: List["CMsgDotaScenarioHeroAbility"] = betterproto.message_field(152)
+    hero_facet: int = betterproto.uint32_field(153)
 
 
 @dataclass

@@ -13,6 +13,7 @@ class EBaseClientMessages(betterproto.Enum):
     CM_DevPaletteVisibilityChanged = 283
     CM_WorldUIControllerHasPanelChanged = 284
     CM_RotateAnchor = 285
+    CM_ListenForResponseFound = 286
     CM_MAX_BASE = 300
 
 
@@ -59,3 +60,8 @@ class CClientMsg_WorldUIControllerHasPanelChangedEvent(betterproto.Message):
 @dataclass
 class CClientMsg_RotateAnchor(betterproto.Message):
     angle: float = betterproto.float_field(1)
+
+
+@dataclass
+class CClientMsg_ListenForResponseFound(betterproto.Message):
+    player_slot: int = betterproto.int32_field(1)

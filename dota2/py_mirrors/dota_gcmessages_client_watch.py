@@ -74,7 +74,7 @@ class CSourceTVGameSmall(betterproto.Message):
 @dataclass
 class CSourceTVGameSmallPlayer(betterproto.Message):
     account_id: int = betterproto.uint32_field(1)
-    hero_id: int = betterproto.uint32_field(2)
+    hero_id: int = betterproto.int32_field(2)
     team_slot: int = betterproto.uint32_field(3)
     team: int = betterproto.uint32_field(4)
 
@@ -83,7 +83,7 @@ class CSourceTVGameSmallPlayer(betterproto.Message):
 class CMsgClientToGCFindTopSourceTVGames(betterproto.Message):
     search_key: str = betterproto.string_field(1)
     league_id: int = betterproto.uint32_field(2)
-    hero_id: int = betterproto.uint32_field(3)
+    hero_id: int = betterproto.int32_field(3)
     start_game: int = betterproto.uint32_field(4)
     game_list_index: int = betterproto.uint32_field(5)
     lobby_ids: List[int] = betterproto.uint64_field(6)
@@ -93,7 +93,7 @@ class CMsgClientToGCFindTopSourceTVGames(betterproto.Message):
 class CMsgGCToClientFindTopSourceTVGamesResponse(betterproto.Message):
     search_key: str = betterproto.string_field(1)
     league_id: int = betterproto.uint32_field(2)
-    hero_id: int = betterproto.uint32_field(3)
+    hero_id: int = betterproto.int32_field(3)
     start_game: int = betterproto.uint32_field(4)
     num_games: int = betterproto.uint32_field(5)
     game_list_index: int = betterproto.uint32_field(6)

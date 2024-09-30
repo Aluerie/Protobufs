@@ -7,31 +7,31 @@ The repository contains extra content:
 * `proto.exe` - from [protobuf/releases](<https://github.com/protocolbuffers/protobuf/releases/>).
 * `compile.ps1` file in it for easy compiling files in batches.
 * compiled `.py` proto-mirrors for
-    * Dota 2: `./dota2/py_mirrors`
+  * Dota 2: `./dota2/py_mirrors`
 
 ## 🆘 TODO
 
 * [ ] Script to fix `.py` files (this is probably more suitable for some cursed post-commit git-action ci)
-    * [ ] `CMsg` and similar `k_msg_something` pointless prefixes
-    * [ ] `GC` pointless prefixes to enums (but keep GCToClient or similar ones)
-    * [ ] Remove `DOTA` prefixes
-    * [ ] When they repeat class name in enums vars - remove it from enum var names
-    * [ ] PascalCase for enum variables and class names
-    * [ ] ^Meaning remove `_` from them too
-    * [ ] `@dataclass` into `@dataclass(eq=False, repr=False)`
-    * [ ] Change `List` to `list`
-    * [ ] Remove " in their `List["Something"]`
-    * [ ] add `from __future__ import annotations`
-    * [ ] Add one line-break before that^ and after `#` disclaimer comments
-    * [ ] resolve `TYPE_CHECKING` relative imports from other files
-    * [ ] Change `Optional` to `| None`
-    * [ ] Reformat with black/isort/ruff in case some strings went below line limit or something
+  * [ ] `CMsg` and similar `k_msg_something` pointless prefixes
+  * [ ] `GC` pointless prefixes to enums (but keep GCToClient or similar ones)
+  * [ ] Remove `DOTA` prefixes
+  * [ ] When they repeat class name in enums vars - remove it from enum var names
+  * [ ] PascalCase for enum variables and class names
+  * [ ] ^Meaning remove `_` from them too
+  * [ ] `@dataclass` into `@dataclass(eq=False, repr=False)`
+  * [ ] Change `List` to `list`
+  * [ ] Remove " in their `List["Something"]`
+  * [ ] add `from __future__ import annotations`
+  * [ ] Add one line-break before that^ and after `#` disclaimer comments
+  * [ ] resolve `TYPE_CHECKING` relative imports from other files
+  * [ ] Change `Optional` to `| None`
+  * [ ] Reformat with black/isort/ruff in case some strings went below line limit or something
 * [ ] Edit `compile.ps1`
-    * [ ] include check if `betterproto[compiler]` is installed
-    * [ ] Paste google `descriptor.proto` dependency to compiling folder if it isn't present.
-    * [ ] Pull/Merge from Parent Repo
-    * [ ] Loop over all root folders like `csgo`, `steam`, `tf2`
-    * [ ] Clean up empty directories it sometimes makes
+  * [ ] include check if `betterproto[compiler]` is installed
+  * [ ] Paste google `descriptor.proto` dependency to compiling folder if it isn't present.
+  * [ ] Pull/Merge from Parent Repo
+  * [ ] Loop over all root folders like `csgo`, `steam`, `tf2`
+  * [ ] Clean up empty directories it sometimes makes
 * [ ] Rethink folder structure - is there anything better than trashing everything into extra folder.
 
 ## 💡 Notes to remember

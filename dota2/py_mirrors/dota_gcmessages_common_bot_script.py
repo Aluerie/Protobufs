@@ -82,7 +82,7 @@ class CMsgBotWorldStateVector(betterproto.Message):
 @dataclass
 class CMsgBotWorldStatePlayer(betterproto.Message):
     player_id: int = betterproto.int32_field(1)
-    hero_id: int = betterproto.uint32_field(2)
+    hero_id: int = betterproto.int32_field(2)
     is_alive: bool = betterproto.bool_field(3)
     respawn_time: float = betterproto.float_field(4)
     kills: int = betterproto.uint32_field(5)

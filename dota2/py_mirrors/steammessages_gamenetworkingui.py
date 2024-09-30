@@ -56,3 +56,24 @@ class CGameNetworkingUI_Message(betterproto.Message):
     connection_state: List[
         "CGameNetworkingUI_ConnectionState"
     ] = betterproto.message_field(1)
+
+
+@dataclass
+class CGameNetworkingUI_ConnectionSummary(betterproto.Message):
+    transport_kind: int = betterproto.uint32_field(1)
+    connection_state: int = betterproto.uint32_field(8)
+    sdrpop_local: str = betterproto.string_field(2)
+    sdrpop_remote: str = betterproto.string_field(3)
+    ping_ms: int = betterproto.uint32_field(4)
+    packet_loss: float = betterproto.float_field(5)
+    ping_default_internet_route: int = betterproto.uint32_field(6)
+    ip_was_shared: bool = betterproto.bool_field(7)
+
+
+@dataclass
+class CGameNetworkingUI_AppSummary(betterproto.Message):
+    appid: int = betterproto.uint32_field(1)
+    ip_was_shared_with_friend: bool = betterproto.bool_field(10)
+    ip_was_shared_with_nonfriend: bool = betterproto.bool_field(11)
+    active_connections: int = betterproto.uint32_field(20)
+    main_cxn: "CGameNetworkingUI_ConnectionSummary" = betterproto.message_field(30)

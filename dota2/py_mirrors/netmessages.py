@@ -12,19 +12,17 @@ class CLC_Messages(betterproto.Enum):
     clc_Move = 21
     clc_VoiceData = 22
     clc_BaselineAck = 23
-    clc_ListenEvents = 24
     clc_RespondCvarValue = 25
     clc_FileCRCCheck = 26
     clc_LoadingProgress = 27
     clc_SplitPlayerConnect = 28
-    clc_ClientMessage = 29
     clc_SplitPlayerDisconnect = 30
     clc_ServerStatus = 31
-    clc_ServerPing = 32
     clc_RequestPause = 33
     clc_CmdKeyValues = 34
     clc_RconServerDetails = 35
     clc_HltvReplay = 36
+    clc_Diagnostic = 37
 
 
 class SVC_Messages(betterproto.Enum):
@@ -55,14 +53,15 @@ class SVC_Messages(betterproto.Enum):
     svc_FullFrameSplit = 70
     svc_RconServerDetails = 71
     svc_UserMessage = 72
-    svc_HltvReplay = 73
     svc_Broadcast_Command = 74
     svc_HltvFixupOperatorStatus = 75
+    svc_UserCmds = 76
 
 
 class VoiceDataFormatT(betterproto.Enum):
     VOICEDATA_FORMAT_STEAM = 0
     VOICEDATA_FORMAT_ENGINE = 1
+    VOICEDATA_FORMAT_OPUS = 2
 
 
 class RequestPauseT(betterproto.Enum):
@@ -130,8 +129,7 @@ class CCLCMsg_ClientInfo(betterproto.Message):
 @dataclass
 class CCLCMsg_Move(betterproto.Message):
     data: bytes = betterproto.bytes_field(3)
-    command_number: int = betterproto.uint32_field(4)
-    num_commands: int = betterproto.uint32_field(5)
+    last_command_number: int = betterproto.uint32_field(4)
 
 
 @dataclass
@@ -142,6 +140,9 @@ class CMsgVoiceAudio(betterproto.Message):
     section_number: int = betterproto.uint32_field(4)
     sample_rate: int = betterproto.uint32_field(5)
     uncompressed_sample_offset: int = betterproto.uint32_field(6)
+    num_packets: int = betterproto.uint32_field(7)
+    packet_offsets: List[int] = betterproto.uint32_field(8)
+    voice_level: float = betterproto.float_field(9)
 
 
 @dataclass
@@ -190,12 +191,6 @@ class CCLCMsg_SplitPlayerConnect(betterproto.Message):
 
 
 @dataclass
-class CCLCMsg_ClientMessage(betterproto.Message):
-    msg_type: int = betterproto.int32_field(1)
-    data: bytes = betterproto.bytes_field(2)
-
-
-@dataclass
 class CCLCMsg_SplitPlayerDisconnect(betterproto.Message):
     slot: int = betterproto.int32_field(1)
 
@@ -203,11 +198,6 @@ class CCLCMsg_SplitPlayerDisconnect(betterproto.Message):
 @dataclass
 class CCLCMsg_ServerStatus(betterproto.Message):
     simplified: bool = betterproto.bool_field(1)
-
-
-@dataclass
-class CCLCMsg_ServerPing(betterproto.Message):
-    pass
 
 
 @dataclass
@@ -224,6 +214,68 @@ class CCLCMsg_CmdKeyValues(betterproto.Message):
 @dataclass
 class CCLCMsg_RconServerDetails(betterproto.Message):
     token: bytes = betterproto.bytes_field(1)
+
+
+@dataclass
+class CMsgSource2SystemSpecs(betterproto.Message):
+    cpu_id: str = betterproto.string_field(1)
+    cpu_brand: str = betterproto.string_field(2)
+    cpu_model: int = betterproto.uint32_field(3)
+    cpu_num_physical: int = betterproto.uint32_field(4)
+    ram_physical_total_mb: int = betterproto.uint32_field(21)
+    gpu_rendersystem_dll_name: str = betterproto.string_field(41)
+    gpu_vendor_id: int = betterproto.uint32_field(42)
+    gpu_driver_name: str = betterproto.string_field(43)
+    gpu_driver_version_high: int = betterproto.uint32_field(44)
+    gpu_driver_version_low: int = betterproto.uint32_field(45)
+    gpu_dx_support_level: int = betterproto.uint32_field(46)
+    gpu_texture_memory_size_mb: int = betterproto.uint32_field(47)
+
+
+@dataclass
+class CMsgSource2VProfLiteReportItem(betterproto.Message):
+    name: str = betterproto.string_field(1)
+    active_samples: int = betterproto.uint32_field(2)
+    usec_max: int = betterproto.uint32_field(3)
+    usec_avg_active: int = betterproto.uint32_field(11)
+    usec_p50_active: int = betterproto.uint32_field(12)
+    usec_p99_active: int = betterproto.uint32_field(13)
+    usec_avg_all: int = betterproto.uint32_field(21)
+    usec_p50_all: int = betterproto.uint32_field(22)
+    usec_p99_all: int = betterproto.uint32_field(23)
+
+
+@dataclass
+class CMsgSource2VProfLiteReport(betterproto.Message):
+    total: "CMsgSource2VProfLiteReportItem" = betterproto.message_field(1)
+    items: List["CMsgSource2VProfLiteReportItem"] = betterproto.message_field(2)
+    discarded_frames: int = betterproto.uint32_field(3)
+
+
+@dataclass
+class CCLCMsg_Diagnostic(betterproto.Message):
+    system_specs: "CMsgSource2SystemSpecs" = betterproto.message_field(1)
+    vprof_report: "CMsgSource2VProfLiteReport" = betterproto.message_field(2)
+
+
+@dataclass
+class CSource2Metrics_MatchPerfSummary_Notification(betterproto.Message):
+    appid: int = betterproto.uint32_field(1)
+    game_mode: str = betterproto.string_field(2)
+    server_build_id: int = betterproto.uint32_field(3)
+    server_profile: "CMsgSource2VProfLiteReport" = betterproto.message_field(10)
+    clients: List[
+        "CSource2Metrics_MatchPerfSummary_NotificationClient"
+    ] = betterproto.message_field(11)
+    map: str = betterproto.string_field(20)
+
+
+@dataclass
+class CSource2Metrics_MatchPerfSummary_NotificationClient(betterproto.Message):
+    system_specs: "CMsgSource2SystemSpecs" = betterproto.message_field(1)
+    profile: "CMsgSource2VProfLiteReport" = betterproto.message_field(2)
+    build_id: int = betterproto.uint32_field(3)
+    steamid: float = betterproto.fixed64_field(10)
 
 
 @dataclass
@@ -407,7 +459,7 @@ class CSVCMsg_GameEventListdescriptorT(betterproto.Message):
 class CSVCMsg_PacketEntities(betterproto.Message):
     max_entries: int = betterproto.int32_field(1)
     updated_entries: int = betterproto.int32_field(2)
-    is_delta: bool = betterproto.bool_field(3)
+    legacy_is_delta: bool = betterproto.bool_field(3)
     update_baseline: bool = betterproto.bool_field(4)
     baseline: int = betterproto.int32_field(5)
     delta_from: int = betterproto.int32_field(6)
@@ -415,30 +467,33 @@ class CSVCMsg_PacketEntities(betterproto.Message):
     pending_full_frame: bool = betterproto.bool_field(8)
     active_spawngroup_handle: int = betterproto.uint32_field(9)
     max_spawngroup_creationsequence: int = betterproto.uint32_field(10)
-    last_cmd_number: int = betterproto.uint32_field(11)
+    last_cmd_number_executed: int = betterproto.uint32_field(11)
+    last_cmd_number_recv_delta: int = betterproto.sint32_field(17)
     server_tick: int = betterproto.uint32_field(12)
     serialized_entities: bytes = betterproto.bytes_field(13)
-    command_queue_info: "CSVCMsg_PacketEntitiesCommandQueueInfoT" = (
-        betterproto.message_field(14)
-    )
     alternate_baselines: List[
         "CSVCMsg_PacketEntitiesAlternateBaselineT"
     ] = betterproto.message_field(15)
-
-
-@dataclass
-class CSVCMsg_PacketEntitiescommandQueueInfoT(betterproto.Message):
-    commands_queued: int = betterproto.uint32_field(1)
-    command_queue_desired_size: int = betterproto.uint32_field(2)
-    starved_command_ticks: int = betterproto.uint32_field(3)
-    time_dilation_percent: float = betterproto.float_field(4)
-    discarded_command_ticks: int = betterproto.uint32_field(5)
+    has_pvs_vis_bits: int = betterproto.uint32_field(16)
+    cmd_recv_status: List[int] = betterproto.sint32_field(22)
+    non_transmitted_entities: "CSVCMsg_PacketEntitiesNonTransmittedEntitiesT" = (
+        betterproto.message_field(19)
+    )
+    cq_starved_command_ticks: int = betterproto.uint32_field(20)
+    cq_discarded_command_ticks: int = betterproto.uint32_field(21)
+    dev_padding: bytes = betterproto.bytes_field(999)
 
 
 @dataclass
 class CSVCMsg_PacketEntitiesalternateBaselineT(betterproto.Message):
     entity_index: int = betterproto.int32_field(1)
     baseline_index: int = betterproto.int32_field(2)
+
+
+@dataclass
+class CSVCMsg_PacketEntitiesnonTransmittedEntitiesT(betterproto.Message):
+    header_count: int = betterproto.int32_field(1)
+    data: bytes = betterproto.bytes_field(2)
 
 
 @dataclass
@@ -561,6 +616,7 @@ class ProtoFlattenedSerializerFieldT(betterproto.Message):
     polymorphic_types: List[
         "ProtoFlattenedSerializerFieldTPolymorphicFieldT"
     ] = betterproto.message_field(11)
+    var_serializer_sym: int = betterproto.int32_field(12)
 
 
 @dataclass
@@ -615,8 +671,8 @@ class CMsgServerNetworkStats(betterproto.Message):
     num_tv_relays: int = betterproto.int32_field(11)
     fps: float = betterproto.float_field(12)
     ports: List["CMsgServerNetworkStatsPort"] = betterproto.message_field(17)
-    avg_latency_out: float = betterproto.float_field(18)
-    avg_latency_in: float = betterproto.float_field(19)
+    avg_ping_ms: float = betterproto.float_field(18)
+    avg_engine_latency_out: float = betterproto.float_field(19)
     avg_packets_out: float = betterproto.float_field(20)
     avg_packets_in: float = betterproto.float_field(21)
     avg_loss_out: float = betterproto.float_field(22)
@@ -640,10 +696,12 @@ class CMsgServerNetworkStatsPort(betterproto.Message):
 class CMsgServerNetworkStatsPlayer(betterproto.Message):
     steamid: int = betterproto.uint64_field(1)
     remote_addr: str = betterproto.string_field(2)
-    ping_stddev_ms: int = betterproto.int32_field(3)
     ping_avg_ms: int = betterproto.int32_field(4)
     packet_loss_pct: float = betterproto.float_field(5)
     is_bot: bool = betterproto.bool_field(6)
+    loss_in: float = betterproto.float_field(7)
+    loss_out: float = betterproto.float_field(8)
+    engine_latency_ms: int = betterproto.int32_field(9)
 
 
 @dataclass
@@ -688,3 +746,17 @@ class CCLCMsg_HltvFixupOperatorTick(betterproto.Message):
 class CSVCMsg_HltvFixupOperatorStatus(betterproto.Message):
     mode: int = betterproto.uint32_field(1)
     override_operator_name: str = betterproto.string_field(2)
+
+
+@dataclass
+class CMsgServerUserCmd(betterproto.Message):
+    data: bytes = betterproto.bytes_field(1)
+    cmd_number: int = betterproto.int32_field(2)
+    player_slot: int = betterproto.int32_field(3)
+    server_tick_executed: int = betterproto.int32_field(4)
+    client_tick: int = betterproto.int32_field(5)
+
+
+@dataclass
+class CSVCMsg_UserCommands(betterproto.Message):
+    commands: List["CMsgServerUserCmd"] = betterproto.message_field(1)

@@ -26,6 +26,7 @@ class EBaseUserMessages(betterproto.Enum):
     UM_SayTextChannel = 119
     UM_Shake = 120
     UM_ShakeDir = 121
+    UM_WaterShake = 122
     UM_TextMsg = 124
     UM_ScreenTilt = 125
     UM_VoiceMask = 128
@@ -56,6 +57,8 @@ class EBaseUserMessages(betterproto.Enum):
     UM_RequestDiagnostic = 162
     UM_DiagnosticResponse = 163
     UM_ExtraUserData = 164
+    UM_NotifyResponseFound = 165
+    UM_PlayResponseConditional = 166
     UM_MAX_BASE = 200
 
 
@@ -107,6 +110,12 @@ class PARTICLE_MESSAGE(betterproto.Enum):
     GAME_PARTICLE_MANAGER_EVENT_UPDATE_TRANSFORM = 27
     GAME_PARTICLE_MANAGER_EVENT_FREEZE_TRANSITION_OVERRIDE = 28
     GAME_PARTICLE_MANAGER_EVENT_FREEZE_INVOLVING = 29
+    GAME_PARTICLE_MANAGER_EVENT_ADD_MODELLIST_OVERRIDE_ELEMENT = 30
+    GAME_PARTICLE_MANAGER_EVENT_CLEAR_MODELLIST_OVERRIDE = 31
+    GAME_PARTICLE_MANAGER_EVENT_CREATE_PHYSICS_SIM = 32
+    GAME_PARTICLE_MANAGER_EVENT_DESTROY_PHYSICS_SIM = 33
+    GAME_PARTICLE_MANAGER_EVENT_SET_VDATA = 34
+    GAME_PARTICLE_MANAGER_EVENT_SET_MATERIAL_OVERRIDE = 35
 
 
 class EHapticPulseType(betterproto.Enum):
@@ -177,6 +186,14 @@ class CUserMessageShake(betterproto.Message):
 class CUserMessageShakeDir(betterproto.Message):
     shake: "CUserMessageShake" = betterproto.message_field(1)
     direction: "CMsgVector" = betterproto.message_field(2)
+
+
+@dataclass
+class CUserMessageWaterShake(betterproto.Message):
+    command: int = betterproto.uint32_field(1)
+    amplitude: float = betterproto.float_field(2)
+    frequency: float = betterproto.float_field(3)
+    duration: float = betterproto.float_field(4)
 
 
 @dataclass
@@ -461,6 +478,22 @@ class CUserMsg_ParticleManager(betterproto.Message):
     freeze_particle_involving: "CUserMsg_ParticleManagerFreezeParticleInvolving" = (
         betterproto.message_field(32)
     )
+    add_modellist_override_element: "CUserMsg_ParticleManagerAddModellistOverrideElement" = betterproto.message_field(
+        33
+    )
+    clear_modellist_override: "CUserMsg_ParticleManagerClearModellistOverride" = (
+        betterproto.message_field(34)
+    )
+    create_physics_sim: "CUserMsg_ParticleManagerCreatePhysicsSim" = (
+        betterproto.message_field(35)
+    )
+    destroy_physics_sim: "CUserMsg_ParticleManagerDestroyPhysicsSim" = (
+        betterproto.message_field(36)
+    )
+    set_vdata: "CUserMsg_ParticleManagerSetVData" = betterproto.message_field(37)
+    set_material_override: "CUserMsg_ParticleManagerSetMaterialOverride" = (
+        betterproto.message_field(38)
+    )
 
 
 @dataclass
@@ -477,6 +510,9 @@ class CUserMsg_ParticleManagerCreateParticle(betterproto.Message):
     apply_voice_ban_rules: bool = betterproto.bool_field(5)
     team_behavior: int = betterproto.int32_field(6)
     control_point_configuration: str = betterproto.string_field(7)
+    cluster: bool = betterproto.bool_field(8)
+    endcap_time: float = betterproto.float_field(9)
+    aggregation_position: "CMsgVector" = betterproto.message_field(10)
 
 
 @dataclass
@@ -645,6 +681,18 @@ class CUserMsg_ParticleManagerFreezeParticleInvolving(betterproto.Message):
 
 
 @dataclass
+class CUserMsg_ParticleManagerAddModellistOverrideElement(betterproto.Message):
+    model_name: str = betterproto.string_field(1)
+    spawn_probability: float = betterproto.float_field(2)
+    groupid: int = betterproto.uint32_field(3)
+
+
+@dataclass
+class CUserMsg_ParticleManagerClearModellistOverride(betterproto.Message):
+    groupid: int = betterproto.uint32_field(1)
+
+
+@dataclass
 class CUserMsg_ParticleManagerSetParticleNamedValueContext(betterproto.Message):
     float_values: List[
         "CUserMsg_ParticleManagerSetParticleNamedValueContextFloatContextValue"
@@ -694,6 +742,29 @@ class CUserMsg_ParticleManagerSetParticleNamedValueContextEHandleContext(
 
 
 @dataclass
+class CUserMsg_ParticleManagerCreatePhysicsSim(betterproto.Message):
+    prop_group_name: str = betterproto.string_field(1)
+    use_high_quality_simulation: bool = betterproto.bool_field(2)
+    max_particle_count: int = betterproto.uint32_field(3)
+
+
+@dataclass
+class CUserMsg_ParticleManagerDestroyPhysicsSim(betterproto.Message):
+    pass
+
+
+@dataclass
+class CUserMsg_ParticleManagerSetVData(betterproto.Message):
+    vdata_name: str = betterproto.string_field(1)
+
+
+@dataclass
+class CUserMsg_ParticleManagerSetMaterialOverride(betterproto.Message):
+    material_name: str = betterproto.string_field(1)
+    include_children: bool = betterproto.bool_field(2)
+
+
+@dataclass
 class CUserMsg_HudError(betterproto.Message):
     order_id: int = betterproto.int32_field(1)
 
@@ -723,22 +794,6 @@ class CUserMessageHapticsManagerEffect(betterproto.Message):
 class CUserMessageAnimStateGraphState(betterproto.Message):
     entity_index: int = betterproto.int32_field(1)
     data: bytes = betterproto.bytes_field(2)
-
-
-@dataclass
-class CUserMessageCommandQueueState(betterproto.Message):
-    player_slot: int = betterproto.int32_field(1)
-    command_queue_info: "CUserMessageCommandQueueStateCommandQueueInfoT" = (
-        betterproto.message_field(2)
-    )
-
-
-@dataclass
-class CUserMessageCommandQueueStatecommandQueueInfoT(betterproto.Message):
-    commands_queued: int = betterproto.uint32_field(1)
-    command_queue_desired_size: int = betterproto.uint32_field(2)
-    starved_command_ticks: int = betterproto.uint32_field(3)
-    time_dilation_percent: int = betterproto.int32_field(4)
 
 
 @dataclass
@@ -810,6 +865,7 @@ class CUserMessage_DllStatus(betterproto.Message):
     diagnostics: List["CUserMessage_DllStatusCVDiagnostic"] = betterproto.message_field(
         7
     )
+    modules: List["CUserMessage_DllStatusCModule"] = betterproto.message_field(8)
 
 
 @dataclass
@@ -818,6 +874,14 @@ class CUserMessage_DllStatusCVDiagnostic(betterproto.Message):
     extended: int = betterproto.uint32_field(2)
     value: int = betterproto.uint64_field(3)
     string_value: str = betterproto.string_field(4)
+
+
+@dataclass
+class CUserMessage_DllStatusCModule(betterproto.Message):
+    base_addr: int = betterproto.uint64_field(1)
+    name: str = betterproto.string_field(2)
+    size: int = betterproto.uint32_field(3)
+    timestamp: int = betterproto.uint32_field(4)
 
 
 @dataclass
@@ -847,6 +911,7 @@ class CUserMessage_Inventory_Response(betterproto.Message):
     inv_type: int = betterproto.int32_field(11)
     build_version: int = betterproto.int32_field(12)
     instance: int = betterproto.int32_field(13)
+    start_time: int = betterproto.int64_field(15)
 
 
 @dataclass
@@ -883,6 +948,8 @@ class CUserMessageRequestDiagnosticDiagnostic(betterproto.Message):
     detail: int = betterproto.int64_field(9)
     name: str = betterproto.string_field(10)
     alias: str = betterproto.string_field(11)
+    vardetail: bytes = betterproto.bytes_field(12)
+    context: int = betterproto.int32_field(13)
 
 
 @dataclass
@@ -892,6 +959,9 @@ class CUserMessage_Diagnostic_Response(betterproto.Message):
     ] = betterproto.message_field(1)
     build_version: int = betterproto.int32_field(2)
     instance: int = betterproto.int32_field(3)
+    start_time: int = betterproto.int64_field(4)
+    osversion: int = betterproto.int32_field(5)
+    platform: int = betterproto.int32_field(6)
 
 
 @dataclass
@@ -904,6 +974,13 @@ class CUserMessage_Diagnostic_ResponseDiagnostic(betterproto.Message):
     base: int = betterproto.int64_field(6)
     range: int = betterproto.int64_field(7)
     type: int = betterproto.int32_field(8)
+    name: str = betterproto.string_field(10)
+    alias: str = betterproto.string_field(11)
+    backup: bytes = betterproto.bytes_field(12)
+    context: int = betterproto.int32_field(13)
+    control: int = betterproto.int64_field(14)
+    augment: int = betterproto.int64_field(15)
+    placebo: int = betterproto.int64_field(16)
 
 
 @dataclass
@@ -913,3 +990,37 @@ class CUserMessage_ExtraUserData(betterproto.Message):
     value2: int = betterproto.int64_field(3)
     detail1: List[bytes] = betterproto.bytes_field(4)
     detail2: List[bytes] = betterproto.bytes_field(5)
+
+
+@dataclass
+class CUserMessage_NotifyResponseFound(betterproto.Message):
+    ent_index: int = betterproto.int32_field(1)
+    rule_name: str = betterproto.string_field(2)
+    response_value: str = betterproto.string_field(3)
+    response_concept: str = betterproto.string_field(4)
+    criteria: List[
+        "CUserMessage_NotifyResponseFoundCriteria"
+    ] = betterproto.message_field(5)
+    int_criteria_names: List[int] = betterproto.uint32_field(6)
+    int_criteria_values: List[int] = betterproto.int32_field(7)
+    float_criteria_names: List[int] = betterproto.uint32_field(8)
+    float_criteria_values: List[float] = betterproto.float_field(9)
+    symbol_criteria_names: List[int] = betterproto.uint32_field(10)
+    symbol_criteria_values: List[int] = betterproto.uint32_field(11)
+    speak_result: int = betterproto.int32_field(12)
+
+
+@dataclass
+class CUserMessage_NotifyResponseFoundCriteria(betterproto.Message):
+    name_symbol: int = betterproto.uint32_field(1)
+    value: str = betterproto.string_field(2)
+
+
+@dataclass
+class CUserMessage_PlayResponseConditional(betterproto.Message):
+    ent_index: int = betterproto.int32_field(1)
+    player_slots: List[int] = betterproto.int32_field(2)
+    response: str = betterproto.string_field(3)
+    ent_origin: "CMsgVector" = betterproto.message_field(4)
+    pre_delay: float = betterproto.float_field(5)
+    mix_priority: int = betterproto.int32_field(6)

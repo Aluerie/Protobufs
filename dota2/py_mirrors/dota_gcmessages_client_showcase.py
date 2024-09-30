@@ -227,7 +227,7 @@ class CMsgShowcaseItem_EconItemData(betterproto.Message):
 @dataclass
 class CMsgShowcaseItem_Hero(betterproto.Message):
     data: "CMsgShowcaseItem_HeroData" = betterproto.message_field(1)
-    hero_id: int = betterproto.uint32_field(2)
+    hero_id: int = betterproto.int32_field(2)
     econ_item_refs: List["CMsgShowcaseEconItemReference"] = betterproto.message_field(3)
     rotation: int = betterproto.uint32_field(4)
     flags: int = betterproto.uint32_field(5)
@@ -243,14 +243,14 @@ class CMsgShowcaseItem_Hero(betterproto.Message):
 @dataclass
 class CMsgShowcaseItem_HeroData(betterproto.Message):
     econ_items: List["CSOEconItem"] = betterproto.message_field(1)
-    actual_hero_id: int = betterproto.uint32_field(2)
+    actual_hero_id: int = betterproto.int32_field(2)
     plus_hero_xp: int = betterproto.uint32_field(3)
 
 
 @dataclass
 class CMsgShowcaseItem_HeroIcon(betterproto.Message):
     data: "CMsgShowcaseItem_HeroIconData" = betterproto.message_field(1)
-    hero_id: int = betterproto.uint32_field(2)
+    hero_id: int = betterproto.int32_field(2)
     econ_item_ref: "CMsgShowcaseEconItemReference" = betterproto.message_field(3)
 
 
@@ -268,7 +268,7 @@ class CMsgShowcaseItem_PlayerMatch(betterproto.Message):
 
 @dataclass
 class CMsgShowcaseItem_PlayerMatchData(betterproto.Message):
-    hero_id: int = betterproto.uint32_field(1)
+    hero_id: int = betterproto.int32_field(1)
     timestamp: int = betterproto.uint32_field(2)
     duration: int = betterproto.uint32_field(3)
     game_mode: "DOTA_GameMode" = betterproto.enum_field(4)
@@ -373,6 +373,9 @@ class CMsgShowcaseItemData(betterproto.Message):
     creep: "CMsgShowcaseItem_EconItem" = betterproto.message_field(17, group="item")
     tower: "CMsgShowcaseItem_EconItem" = betterproto.message_field(18, group="item")
     effigy: "CMsgShowcaseItem_EconItem" = betterproto.message_field(19, group="item")
+    decoration: "CMsgShowcaseItem_EconItem" = betterproto.message_field(
+        20, group="item"
+    )
     background: "CMsgShowcaseBackground" = betterproto.message_field(100, group="item")
 
 

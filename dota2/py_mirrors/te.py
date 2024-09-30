@@ -223,6 +223,9 @@ class CMsgTEExplosion(betterproto.Message):
     affect_ragdolls: bool = betterproto.bool_field(9)
     effect_name: str = betterproto.string_field(10)
     explosion_type: int = betterproto.uint32_field(11)
+    create_debris: bool = betterproto.bool_field(12)
+    debris_origin: "CMsgVector" = betterproto.message_field(13)
+    debris_surfaceprop: float = betterproto.fixed32_field(14)
 
 
 @dataclass
